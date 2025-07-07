@@ -26,6 +26,4 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
-**/pubspec-overrides.yaml
-
-**/private
+private
