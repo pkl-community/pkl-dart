@@ -7,8 +7,6 @@
 /// is run, demonstrates what the generated usage text looks like.
 library;
 
-import 'dart:io';
-
 import 'package:args/args.dart';
 import 'package:path/path.dart' as p;
 import 'package:pkl_dart/src/generator.dart';

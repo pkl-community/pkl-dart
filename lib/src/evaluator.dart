@@ -46,8 +46,8 @@ class Evaluator {
 
   /// Evaluates the provided [expression] within the given module [source] and decodes the result as a Dart type
   Future<dynamic> evaluateExpression(ModuleSource source, String? expression) async {
-    final bytes = await evaluateExpressionRaw(source, expression);
-
+    final _ = await evaluateExpressionRaw(source, expression);
+    throw UnimplementedError("TODO: Implement");
   }
 
   /// Evaluates the provided [expression] within the given module [source] and returns the underlying response in binary form
@@ -59,6 +59,8 @@ class Evaluator {
   Future<void> close() async {
     _closed = true;
   }
+
+  bool get isClosed => _closed;
 }
 
 class ModuleSource {

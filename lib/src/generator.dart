@@ -1,5 +1,3 @@
-import 'package:path/path.dart' as p;
-
 import 'generator_settings.dart';
 
 /// The generator that generates source code for Dart given Pkl source

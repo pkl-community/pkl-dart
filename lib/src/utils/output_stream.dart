@@ -1,4 +1,5 @@
 /// A simple way to abstract writing output to a
+library;
 
 sealed class OutputStream {
 }
