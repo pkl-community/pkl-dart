@@ -1,11 +1,28 @@
 import 'dart:typed_data';
 
+import 'evaluator/reader.dart';
+import 'utils/logger.dart';
+
 class EvaluatorManager {}
 
 /// The core API for evaluating Pkl modules
 class Evaluator {
+  final EvaluatorManager manager;
+  final Iterable<ResourceReader> resourceReaders;
+  final Iterable<ModuleReader> moduleReaders;
+  final Map pendingRequests = {};
   final int evaluatorId;
+  final Logger logger;
 
+  bool _closed = false;
+
+  Evaluator({
+    required this.manager,
+    required this.evaluatorId,
+    this.resourceReaders = const [],
+    this.moduleReaders = const [],
+    required this.logger
+  });
 
   /// Evaluates the provided module, and decodes the result as a Dart type
   Future<dynamic> evaluateModule(ModuleSource source) async {
@@ -35,11 +52,13 @@ class Evaluator {
 
   /// Evaluates the provided [expression] within the given module [source] and returns the underlying response in binary form
   Future<Uint8List> evaluateExpressionRaw(ModuleSource source, String? expression) async {
-    throw UnimplementedError("TODO: Implement ");
+    throw UnimplementedError("TODO: Implement evaluateExpressionRaw");
   }
 
   /// Closes this evaluator, cleaning up any resources
-  Future<void> close() async {}
+  Future<void> close() async {
+    _closed = true;
+  }
 }
 
 class ModuleSource {
