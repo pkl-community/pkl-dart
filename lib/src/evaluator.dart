@@ -4,6 +4,8 @@ class EvaluatorManager {}
 
 /// The core API for evaluating Pkl modules
 class Evaluator {
+  final EvaluatorManager manager;
+  
   final int evaluatorId;
 
 
