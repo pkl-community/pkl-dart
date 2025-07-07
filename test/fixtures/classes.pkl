@@ -1,0 +1,17 @@
+module Classes
+
+animals: Listing<Animal> = new {
+  new { name = "Uni" }
+  new { name = "Wally" }
+  new { name = "Mouse" }
+}
+
+age = 23
+
+oli = new {
+  name = "Oliver"
+}
+
+class Animal {
+  name: String
+}

@@ -1,0 +1,5 @@
+module pkl.dart.lib1
+
+abstract class Being {
+  exists: Boolean = true
+}

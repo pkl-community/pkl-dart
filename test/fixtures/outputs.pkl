@@ -1,0 +1,18 @@
+output {
+  text = "Hello from Pkl!"
+
+  files {
+    ["file1.txt"] {
+      text = "This is the content of file 1."
+    }
+    ["config/app.json"] {
+      text = """
+        {
+          "name": "Pkl App",
+          "version": "1.0.0"
+        }
+
+        """
+    }
+  }
+}

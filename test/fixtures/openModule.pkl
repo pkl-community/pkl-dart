@@ -1,0 +1,3 @@
+open module OpenModule
+
+bar = 0

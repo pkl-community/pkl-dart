@@ -1,0 +1,61 @@
+@Deprecated { since = "1.2"; message = "do not use"; replaceWith = "somethingElse" }
+@Unlisted
+@ModuleInfo { minPklVersion = "0.26.0" }
+amends "pkl:Project"
+
+evaluatorSettings {
+  timeout = 5.min
+  rootDir = "."
+  noCache = false
+  moduleCacheDir = "cache/"
+  env {
+    ["one"] = "1"
+  }
+  externalProperties {
+    ["two"] = "2"
+  }
+  modulePath {
+    "modulepath1/"
+    "modulepath2/"
+  }
+  allowedModules {
+    "foo:"
+    "bar:"
+  }
+  allowedResources {
+    "baz:"
+    "biz:"
+  }
+}
+
+package {
+  name = "hawk"
+  baseUri = "package://example.com/hawk"
+  version = "0.5.0"
+  description = "Some project about hawks"
+  packageZipUrl = "https://example.com/hawk/\(version)/hawk-\(version).zip"
+  authors {
+    "Birdy Bird <birdy@bird.com>"
+  }
+  license = "MIT"
+  sourceCode = "https://example.com/my/repo"
+  sourceCodeUrlScheme = "https://example.com/my/repo/\(version)%{path}"
+  documentation = "https://example.com/my/docs"
+  website = "https://example.com/my/website"
+  licenseText = """
+    # Some License text
+
+    This is my license text
+    """
+  apiTests {
+    "apiTest1.pkl"
+    "apiTest2.pkl"
+  }
+  exclude { "*.exe" }
+  issueTracker = "https://example.com/my/issues"
+}
+
+tests {
+  "test1.pkl"
+  "test2.pkl"
+}
