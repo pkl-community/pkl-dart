@@ -53,6 +53,7 @@ Future<void> generatePklGenCode({
   );
 
   // create generator
+  // TODO: OutputStream
   final Generator generator = Generator(
     settings: settings, 
     workingDirectory: p.current,     

@@ -27,7 +27,10 @@ final parser = ArgParser(allowTrailingOptions: true)
   ..addOption('generator-settings',
       abbr: 'g',
       help: "The 'generator-settings.pkl' file to use",
-      defaultsTo: 'generator-settings.pkl');
+      defaultsTo: 'generator-settings.pkl')
+  ..addOption('generate-script',
+    hide: true,
+    help: 'The path to the Generator.pkl file to act as generator script');
 
 void main(List<String> args) async {
   var results = parser.parse(args);
@@ -53,7 +56,8 @@ void main(List<String> args) async {
     currentDirectory: p.current,
     outputPath: results['output'],
     projectPath: results['project-dir'],
-    files: modules
+    files: modules,
+    generateScript: results['generate-script']
   );
 
   // create generator
@@ -61,7 +65,6 @@ void main(List<String> args) async {
     settings: settings, 
     workingDirectory: p.current, 
     verbose: results['verbose'],
-    
   );
 
   // run generator

@@ -26,6 +26,6 @@ class Generator {
 
     // create an evaluator depending on the context
 
-    // run the evaluator
+    // run the evaluator on the files
   }
 }

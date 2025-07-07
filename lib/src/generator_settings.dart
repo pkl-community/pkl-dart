@@ -10,10 +10,15 @@ class GeneratorSettings {
 
   String? outputPath;
   String? projectDir;
+  String? generateScript;
 
-  GeneratorSettings({this.files = const [], this.dryRun, this.outputPath, this.projectDir});
+  GeneratorSettings({this.files = const [], this.dryRun, this.outputPath, this.projectDir, this.generateScript});
 
   GeneratorSettings.empty() : files = const <String>[];
+}
+
+String _generateScriptUrl() {
+  throw UnimplementedError("TODO: Implement _generateScriptUrl");
 }
 
 GeneratorSettings getGeneratorSettingsFromFile(String file, {
@@ -28,6 +33,7 @@ Future<GeneratorSettings> createGeneratorSettings(
     String? currentDirectory,
     String? outputPath,
     String? projectPath,
+    String? generateScript,
     List<String> files = const [],
     FileSystem? fileSystem}) async {
   fileSystem ??= LocalFileSystem();
@@ -46,10 +52,9 @@ Future<GeneratorSettings> createGeneratorSettings(
 
   if (dryRun) baseSettings.dryRun = true;
   if (outputPath case final out?) baseSettings.outputPath = out;
-  if (projectPath case final project?) { 
+  baseSettings.generateScript = generateScript ?? _generateScriptUrl();
+  if (projectPath ?? await findProjectDir(projectPath, fileSystem: fileSystem) case final project?) { 
     baseSettings.projectDir = project; 
-  } else if (await findProjectDir(projectPath, fileSystem: fileSystem) case final project?) {
-    baseSettings.projectDir = project;
   }
   
   return baseSettings;

@@ -1,5 +1,54 @@
+import 'dart:typed_data';
+
 class EvaluatorManager {}
 
-class Evaluator {}
+/// The core API for evaluating Pkl modules
+class Evaluator {
+  final int evaluatorId;
 
-class ProjectEvaluator extends Evaluator {}
+
+  /// Evaluates the provided module, and decodes the result as a Dart type
+  Future<dynamic> evaluateModule(ModuleSource source) async {
+    return await evaluateExpression(source, null);
+  }
+
+  /// Evaluates the `output.text` property of the given module
+  Future<String> evaluateOutputText(ModuleSource source) async {
+    return await evaluateExpression(source, 'output.text');
+  }
+
+  /// Evaluates the `output.value` property of the given module and decodes the result as a Dart type
+  Future<dynamic> evaluateOutputValue(ModuleSource source) async {
+    return await evaluateExpression(source, 'output.value');
+  }
+
+  /// Evaluates the `output.files` property of the given module.
+  Future<Map<String, String>> evaluateOutputFiles(ModuleSource source) async {
+    return await evaluateExpression(source, "output.files.toMap().mapValues((_, it) -> it.text)");
+  }
+
+  /// Evaluates the provided [expression] within the given module [source] and decodes the result as a Dart type
+  Future<dynamic> evaluateExpression(ModuleSource source, String? expression) async {
+    final bytes = await evaluateExpressionRaw(source, expression);
+
+  }
+
+  /// Evaluates the provided [expression] within the given module [source] and returns the underlying response in binary form
+  Future<Uint8List> evaluateExpressionRaw(ModuleSource source, String? expression) async {
+    throw UnimplementedError("TODO: Implement ");
+  }
+
+  /// Closes this evaluator, cleaning up any resources
+  Future<void> close() async {}
+}
+
+class ModuleSource {
+  final Uri uri;
+
+  final String? text;
+
+  const ModuleSource({
+    required this.uri,
+    this.text
+  });
+}

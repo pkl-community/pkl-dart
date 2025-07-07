@@ -1,0 +1,29 @@
+module pkl.dart.dart
+
+typealias DartName = String(matches(Regex(#"(?u)\p{L}[\p{L}\d_]+"#)))
+
+/// Metadata for the corresponding Dart library for the annotated Pkl module(s).
+///
+/// ```pkl
+/// @dart.Library { name = "MyLibrary" }
+/// import "...";
+/// ```
+class Library extends Annotation {
+  /// The full name of the Dart module
+  name: DartName
+}
+
+/// The name for the annotated member when generated to Dart
+///
+/// This may be used to annotate modules, classes, typealiases, and properties.
+///
+///
+/// Examples:
+///
+/// ```
+/// @dart.Name { value = "ThePerson" }
+/// class Person
+/// ```
+class Name extends Annotation {
+  value: DartName
+}
