@@ -9,9 +9,9 @@ abstract class Reader {
   /// Whether the reader supports globbing via Pkl's `import*` and `glob*` keywords
   bool get isGlobbable;
 
-  /// Whether the URIs handled by the reader are hierarchial 
+  /// Whether the URIs handled by the reader are hierarchial
   /// A hierarchial URI is a URI that has hierarchy elements like host, origin, query, and fragment
-  /// 
+  ///
   /// A hierarchical URI must start with a "/" in its scheme specific part.
   bool get hasHierarchicalUris;
 
@@ -64,13 +64,13 @@ abstract class ModuleReader extends Reader {
 /// Resources are cached by Pkl for the lifetime of an Evaluator.
 ///
 /// Resources are read via the following Pkl expressions:
-/// 
+///
 /// ```pkl
 /// read("myscheme:myresourcee")
 ///	read?("myscheme:myresource")
 ///	read*("myscheme:pattern*") // only if the resource is globabble
 /// ```
-/// 
+///
 /// To provide a custom reader, register it on [EvaluatorOptions.ResourceReaders] when building
 /// an Evaluator.
 abstract class ResourceReader extends Reader {

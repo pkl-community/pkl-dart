@@ -16,13 +16,12 @@ class Evaluator {
 
   bool _closed = false;
 
-  Evaluator({
-    required this.manager,
-    required this.evaluatorId,
-    this.resourceReaders = const [],
-    this.moduleReaders = const [],
-    required this.logger
-  });
+  Evaluator(
+      {required this.manager,
+      required this.evaluatorId,
+      this.resourceReaders = const [],
+      this.moduleReaders = const [],
+      required this.logger});
 
   /// Evaluates the provided module, and decodes the result as a Dart type
   Future<dynamic> evaluateModule(ModuleSource source) async {
@@ -41,17 +40,29 @@ class Evaluator {
 
   /// Evaluates the `output.files` property of the given module.
   Future<Map<String, String>> evaluateOutputFiles(ModuleSource source) async {
-    return await evaluateExpression(source, "output.files.toMap().mapValues((_, it) -> it.text)");
+    return await evaluateExpression(
+        source, "output.files.toMap().mapValues((_, it) -> it.text)");
   }
 
   /// Evaluates the provided [expression] within the given module [source] and decodes the result as a Dart type
-  Future<dynamic> evaluateExpression(ModuleSource source, String? expression) async {
+  Future<dynamic> evaluateExpression(
+      ModuleSource source, String? expression) async {
     final _ = await evaluateExpressionRaw(source, expression);
     throw UnimplementedError("TODO: Implement");
   }
 
   /// Evaluates the provided [expression] within the given module [source] and returns the underlying response in binary form
-  Future<Uint8List> evaluateExpressionRaw(ModuleSource source, String? expression) async {
+  Future<Uint8List> evaluateExpressionRaw(
+      ModuleSource source, String? expression) async {
+    // create evaluator request
+
+    // send request to manager
+
+    // get response
+
+    // if error throw error
+
+    // return response
     throw UnimplementedError("TODO: Implement evaluateExpressionRaw");
   }
 
@@ -68,8 +79,5 @@ class ModuleSource {
 
   final String? text;
 
-  const ModuleSource({
-    required this.uri,
-    this.text
-  });
+  const ModuleSource({required this.uri, this.text});
 }

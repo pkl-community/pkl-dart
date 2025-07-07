@@ -1,6 +1,3 @@
-
-
-
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:path/path.dart' as p;
@@ -22,15 +19,16 @@ void main() {
         test(testName, () async {
           // run generator
           await generatePklGenCode(
-            fileSystem: fileSystem, 
-            file: file.path, 
-            inputDir: projectDir
-          );
+              fileSystem: fileSystem, file: file.path, inputDir: projectDir);
 
           // check for generated file
-          final outputFile = p.join(projectDir, '_temp', '${testName}_input.pkl.dart');
-          final outputFileContents = await fileSystem.file(outputFile).readAsString();
-          final expectedFileContents = await fileSystem.file(p.join(projectDir, expectedFile)).readAsString();
+          final outputFile =
+              p.join(projectDir, '_temp', '${testName}_input.pkl.dart');
+          final outputFileContents =
+              await fileSystem.file(outputFile).readAsString();
+          final expectedFileContents = await fileSystem
+              .file(p.join(projectDir, expectedFile))
+              .readAsString();
 
           expect(outputFileContents, equals(expectedFileContents));
         });
@@ -39,11 +37,10 @@ void main() {
   });
 }
 
-Future<void> generatePklGenCode({
-  required FileSystem fileSystem,
-  required String file,
-  required String inputDir
-}) async {
+Future<void> generatePklGenCode(
+    {required FileSystem fileSystem,
+    required String file,
+    required String inputDir}) async {
   final GeneratorSettings settings = await createGeneratorSettings(
     currentDirectory: p.current,
     outputPath: p.join(inputDir, '_temp'),
@@ -55,8 +52,8 @@ Future<void> generatePklGenCode({
   // create generator
   // TODO: OutputStream
   final Generator generator = Generator(
-    settings: settings, 
-    workingDirectory: p.current,     
+    settings: settings,
+    workingDirectory: p.current,
   );
 
   // run generator

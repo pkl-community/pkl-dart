@@ -1,6 +1,6 @@
 name: pkl_dart
 description: (Unofficial) Support for Pkl in Dart
-version: 0.1.0-pre
+version: 0.1.0-wip
 homepage: https://github.com/nikeokoronkwo/pkl.dart
 
 environment:

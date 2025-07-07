@@ -23,15 +23,18 @@ class StreamLogger implements Logger {
     _logger.level = log.Level.ALL;
     _logger.onRecord.listen((record) {
       // record.object becomes the `frameUri`
-      sink.add('${record.loggerName}: ${record.level == log.Level.INFO ? 'TRACE' : record.level}: ${record.message}');
+      sink.add(
+          '${record.loggerName}: ${record.level == log.Level.INFO ? 'TRACE' : record.level}: ${record.message}');
     });
   }
 
   @override
-  void trace(String message, String frameUri) => _logger.info(LogMessage(message, frameUri));
+  void trace(String message, String frameUri) =>
+      _logger.info(LogMessage(message, frameUri));
 
   @override
-  void warn(String message, String frameUri) => _logger.warning(LogMessage(message, frameUri));
+  void warn(String message, String frameUri) =>
+      _logger.warning(LogMessage(message, frameUri));
 }
 
 class LogMessage {

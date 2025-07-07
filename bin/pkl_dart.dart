@@ -21,14 +21,16 @@ final parser = ArgParser(allowTrailingOptions: true)
       abbr: 'n',
       help: 'Print out info about the run, but do not write to any files')
   ..addFlag('help', abbr: 'h', help: 'Show Help Information')
-  ..addOption('project-dir', help: 'The path to the directory containing the PklProject file to load dependency and evaluator settings from')
+  ..addOption('project-dir',
+      help:
+          'The path to the directory containing the PklProject file to load dependency and evaluator settings from')
   ..addOption('generator-settings',
       abbr: 'g',
       help: "The 'generator-settings.pkl' file to use",
       defaultsTo: 'generator-settings.pkl')
   ..addOption('generate-script',
-    hide: true,
-    help: 'The path to the Generator.pkl file to act as generator script');
+      hide: true,
+      help: 'The path to the Generator.pkl file to act as generator script');
 
 void main(List<String> args) async {
   var results = parser.parse(args);
@@ -49,19 +51,18 @@ void main(List<String> args) async {
 
   // get generator settings
   final GeneratorSettings settings = await createGeneratorSettings(
-    dryRun: results['dry-run'],
-    generatorSettingsFile: generatorSettingsFile,
-    currentDirectory: p.current,
-    outputPath: results['output'],
-    projectPath: results['project-dir'],
-    files: modules,
-    generateScript: results['generate-script']
-  );
+      dryRun: results['dry-run'],
+      generatorSettingsFile: generatorSettingsFile,
+      currentDirectory: p.current,
+      outputPath: results['output'],
+      projectPath: results['project-dir'],
+      files: modules,
+      generateScript: results['generate-script']);
 
   // create generator
   final Generator generator = Generator(
-    settings: settings, 
-    workingDirectory: p.current, 
+    settings: settings,
+    workingDirectory: p.current,
     verbose: results['verbose'],
   );
 
