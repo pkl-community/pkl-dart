@@ -1,11 +1,10 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as path;
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// A representation of a source for a Pkl module to be evaluated.
 class ModuleSource extends Equatable {

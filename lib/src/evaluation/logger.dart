@@ -1,11 +1,10 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:io';
 import 'package:logging/logging.dart' as dl;
 import 'package:equatable/equatable.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// Handler to control logging messages emitted by the Pkl evaluator.
 ///

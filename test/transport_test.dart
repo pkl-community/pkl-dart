@@ -1,3 +1,7 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -9,11 +13,6 @@ import 'package:pkl_dart/src/message.dart';
 import 'package:pkl_dart/src/message_pack/message_pack.dart';
 import 'package:pkl_dart/src/serializer/message_serializer.dart';
 import 'package:test/test.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// A mock IOSink that captures all written bytes into a buffer for inspection.
 class _MockSink implements IOSink {

@@ -1,8 +1,7 @@
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
-/// Defines the Pkl binary encoding type codes.
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 abstract class PklTypeCodes {
   static const int object = 0x1;
   static const int map = 0x2;

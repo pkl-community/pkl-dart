@@ -1,10 +1,9 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import '../pkl_data_model.dart';
 import '../pkl_decodable.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// A helper class to safely decode a Pkl object (represented as a Map)
 /// into a strongly-typed Dart class.

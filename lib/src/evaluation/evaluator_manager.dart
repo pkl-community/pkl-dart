@@ -1,3 +1,7 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:async';
 import 'dart:core';
 import 'dart:isolate';
@@ -13,11 +17,6 @@ import 'manager_messages.dart';
 import 'manager_utils.dart';
 import 'module_source.dart';
 import 'pkl_error.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// Performs [action], returns its result and then closes the manager.
 ///

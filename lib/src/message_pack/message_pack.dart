@@ -1,3 +1,7 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -5,11 +9,6 @@ import 'dart:typed_data';
 import 'package:pkl_dart/src/evaluation/logger.dart';
 
 import 'message_pack_value.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// A codec for MessagePack serialization and deserialization.
 class MessagePackCodec {
@@ -579,6 +578,7 @@ extension _MessagePackFormat on int {
 
   // --- Single Value Constants ---
   static const int nil = 0xc0;
+
   // ignore: unused_field
   static const int neverUsed = 0xc1; // Reserved
   static const int booleanFalse = 0xc2;

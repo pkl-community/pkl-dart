@@ -1,14 +1,13 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:typed_data';
 
 import '../message_pack/message_pack.dart';
 import '../message_pack/message_pack_value.dart';
 import '../pkl_type_codes.dart';
 import 'pkl_data_model.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// Decodes Pkl binary format (MessagePack) into Dart objects.
 class PklDecoder {

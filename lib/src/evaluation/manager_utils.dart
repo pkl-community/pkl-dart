@@ -1,12 +1,11 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:pkl_dart/src/evaluation/pkl_error.dart';
 import 'package:pub_semver/pub_semver.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 // Platform-specific constants
 final String _pklExecName = Platform.isWindows ? 'pkl.exe' : 'pkl';

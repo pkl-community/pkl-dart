@@ -1,11 +1,10 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'package:equatable/equatable.dart';
 import 'package:pkl_dart/src/serializer/pkl_decodable.dart';
 import 'package:pkl_dart/src/serializer/pkl_value/pkl_object_decoder.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 abstract class Being extends Equatable implements PklDecodable {
   const Being();
