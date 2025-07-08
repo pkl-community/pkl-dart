@@ -1,9 +1,9 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 part of '../pkl_data_model.dart';
 
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 /// DataSize is the Dart representation of Pkl's `pkl.DataSize`.
 class DataSize extends PklValue implements PklDecodable {
   /// The value of this [DataSize] in the unit set in [unit].

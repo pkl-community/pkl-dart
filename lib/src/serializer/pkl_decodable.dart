@@ -1,8 +1,6 @@
-// ignore_for_file: dangling_library_doc_comments
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
 /// A type definition for a factory function that creates an object of type [T]
 /// from a decoded Pkl object map.

@@ -1,3 +1,7 @@
+// Copyright (c) 2025, the Pkl community authors.  Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:async';
 import 'dart:io';
 
@@ -7,11 +11,6 @@ import 'package:pkl_dart/src/serializer/message_serializer.dart';
 import '../message.dart';
 import 'manager_utils.dart';
 import 'pkl_error.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// Defines the contract for a transport layer that sends and receives
 /// messages to and from a Pkl server process.

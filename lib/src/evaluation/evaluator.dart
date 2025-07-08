@@ -1,3 +1,7 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:typed_data';
@@ -13,11 +17,6 @@ import 'evaluator_options.dart';
 import 'manager_messages.dart';
 
 typedef EvaluationAction<T> = Future<T> Function(Evaluator);
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// A convenience method for running an action given an evaluator with the supplied evaluator options.
 /// After [action] completes, the evaluator is closed.

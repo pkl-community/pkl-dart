@@ -1,14 +1,13 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'package:equatable/equatable.dart';
 import 'dart:core';
 
-import 'package:pkl_dart/src/message_pack/message_pack_value.dart';
-import 'package:pkl_dart/src/serializer/pkl_decodable.dart';
-import 'package:pkl_dart/src/serializer/pkl_value/pkl_object_decoder.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
+import '../message_pack/message_pack_value.dart';
+import '../serializer/pkl_decodable.dart';
+import '../serializer/pkl_value/pkl_object_decoder.dart';
 
 part 'pkl_value/duration.dart';
 

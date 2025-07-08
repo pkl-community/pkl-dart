@@ -1,13 +1,12 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 
 import '../message.dart';
 import '../serializer/pkl_data_model.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// The Dart representation of standard library module `pkl.EvaluatorSettings`.
 class PklEvaluatorSettings extends Equatable {

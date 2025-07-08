@@ -1,10 +1,9 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import '../message.dart';
 import 'pkl_evaluator_settings.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 // --- Commands from Main Isolate to Background Isolate ---
 sealed class IsolateCommand {

@@ -1,11 +1,10 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'package:equatable/equatable.dart';
 import 'package:pkl_dart/src/evaluation/pkl_evaluator_settings.dart';
 import 'message.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 /// The Dart representation of `pkl.Project`
 class Project extends Equatable implements DependencyDeclaredInProjectFile {

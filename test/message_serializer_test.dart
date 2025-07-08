@@ -1,4 +1,6 @@
-import 'dart:typed_data';
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
 import 'package:pkl_dart/src/evaluation/pkl_error.dart';
 import 'package:pkl_dart/src/message.dart';
@@ -8,13 +10,6 @@ import 'package:pkl_dart/src/serializer/message_serializer.dart';
 import 'package:pkl_dart/src/serializer/pkl_data_model.dart';
 import 'package:pkl_dart/src/serializer/pkl_encoder.dart';
 import 'package:test/test.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
-
-/// A helper writer that uses a [BytesBuilder] to capture encoded data for testing.
 
 void main() {
   group('MessageSerializer', () {

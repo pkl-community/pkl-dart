@@ -1,3 +1,7 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:typed_data';
 import 'package:pkl_dart/src/serializer/pkl_decoder.dart';
 import 'package:test/test.dart';
@@ -5,11 +9,6 @@ import 'package:pkl_dart/src/message_pack/message_pack.dart';
 import 'package:pkl_dart/src/serializer/pkl_encoder.dart';
 import 'package:pkl_dart/src/serializer/pkl_data_model.dart';
 import 'package:pkl_dart/src/pkl_type_codes.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
 
 void main() {
   group('PklCodec (Encoder & Decoder)', () {

@@ -1,15 +1,13 @@
+// Copyright (c) 2025, the Pkl community authors. Please see the AUTHORS file
+// for details. This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
+
 import 'dart:typed_data';
 
-import 'package:pkl_dart/src/message.dart';
-import 'package:pkl_dart/src/message_pack/message_pack.dart';
-import 'package:pkl_dart/src/message_pack/message_pack_value.dart';
-
 import '../evaluation/pkl_error.dart';
-
-/// Copyright (c) 2025 Kirk Agbenyegah
-///
-/// This source code is licensed under the MIT license found in the
-/// LICENSE file in the root directory of this source tree.
+import '../message.dart';
+import '../message_pack/message_pack.dart';
+import '../message_pack/message_pack_value.dart';
 
 /// A codec to serialize and deserialize messages between the client and server.
 class MessageSerializer {
