@@ -23,7 +23,7 @@ void main() {
       final projectDir = _createProjectFixtures(tempDir, 'project');
       final pklProjectPath = '${projectDir.path}/PklProject';
 
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         // Evaluate the PklProject file itself as a module
         final result =
             await evaluator.evaluateModule(ModuleSource.uri(Uri.file(pklProjectPath)))

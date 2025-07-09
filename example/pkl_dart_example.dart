@@ -6,7 +6,7 @@ import 'database_config.dart';
 
 Future<void> main() async {
   /// Decoding to custom dart objects
-  await withEvaluatorPreconfigured((evaluator) async {
+  await Evaluator.run((evaluator) async {
     final configUri = Directory.current.uri.resolve('example/config.pkl');
     final config = await evaluator.evaluateModuleAs<ServerConfig>(
       source: ModuleSource.uri(configUri),
@@ -17,9 +17,8 @@ Future<void> main() async {
     print('Database user: ${config.database.user}');
   });
 
-  final classes = await EvaluatorManager.withEvaluator(
-    action: (e) {
-      final module = ModuleSource.text("""
+  final classes = await Evaluator.run((e) {
+    final module = ModuleSource.text("""
      module Classes
 
          animals: Listing<Animal> = new {
@@ -34,14 +33,13 @@ Future<void> main() async {
          name: String
          }""");
 
-      return e.evaluateModuleAs<Classes>(source: module, fromPkl: Classes.fromPkl);
-    },
-  );
+    return e.evaluateModuleAs<Classes>(source: module, fromPkl: Classes.fromPkl);
+  });
 
   print(classes);
 
   /// Decoding to standard Dart types.
-  await withEvaluatorPreconfigured((evaluator) async {
+  await Evaluator.run((evaluator) async {
     final module = ModuleSource.text('''
       name = "Pkl-Dart"
       version = 1
@@ -65,9 +63,8 @@ Future<void> main() async {
   print(result);
   manager.close();
 
-  final m = await EvaluatorManager.withEvaluator(
-    action: (e) {
-      final module = ModuleSource.text("""
+  final m = await Evaluator.run((e) {
+    final module = ModuleSource.text("""
       module MyModule
 
       // Type Aliases
@@ -96,9 +93,8 @@ Future<void> main() async {
       }
       """);
 
-      return e.evaluateModule(module);
-    },
-  );
+    return e.evaluateModule(module);
+  });
 
   print(m);
 }
