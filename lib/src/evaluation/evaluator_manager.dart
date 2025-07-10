@@ -18,36 +18,20 @@ import 'manager_utils.dart';
 import 'module_source.dart';
 import 'pkl_error.dart';
 
-/// Performs [action], returns its result and then closes the manager.
-///
-/// -  [action]: The action to perform
-/// - Returns: The result of `action`
-Future<dynamic> withEvaluatorManager(Future<dynamic> Function(EvaluatorManager) action) async {
-  final manager = await EvaluatorManager.spawn();
-  var closed = false;
-  try {
-    final result = await action(manager);
-    await manager.close();
-    closed = true;
-    return result;
-  } catch (e) {
-    if (!closed) {
-      await manager.close();
-    }
-    rethrow;
-  }
-}
-
 /// Provides handlers for managing the lifecycles of Pkl evaluators.
 ///
-/// If binding to Pkl as a child process, an evaluator manager represents a single child process.
-/// If spawning multiple evaluators, it is much better to spawn them through the evaluator manager,
-/// rather than through `withEvaluator`. This lessens the overhead of each new evaluator,
-/// and allows Pkl to cache and optimize evaluation.
+/// An evaluator manager represents a single Pkl child process. Spawning multiple
+/// evaluators through one manager is much more efficient than creating new
+/// processes, as it allows Pkl to cache and optimize evaluation.
+///
+/// For simple, one-off evaluations, prefer using the static methods on the
+/// [Evaluator] class, like [Evaluator.run].
 class EvaluatorManager {
   late final SendPort _sendPortToIsolate;
   late final ReceivePort _receivePortFromIsolate;
   final Map<int, Completer<dynamic>> _commandCompleters = {};
+
+  // Centralized counter for generating unique command IDs to prevent race conditions.
   int _nextCommandId = 0;
 
   final Map<int, Evaluator> _evaluatorProxies = {};
@@ -62,7 +46,6 @@ class EvaluatorManager {
 
   /// Spawns a background Isolate for the manager logic.
   static Future<EvaluatorManager> spawn() async {
-    // Create a receive port and add its initial message handler
     final initPort = RawReceivePort();
     final connection = Completer<(ReceivePort, SendPort)>.sync();
     initPort.handler = (initialMessage) {
@@ -70,7 +53,6 @@ class EvaluatorManager {
       connection.complete((ReceivePort.fromRawReceivePort(initPort), commandPort));
     };
 
-    // Spawn the isolate.
     try {
       await Isolate.spawn(evaluatorManagerIsolateEntrypoint, (initPort.sendPort));
     } on Object {
@@ -79,7 +61,6 @@ class EvaluatorManager {
     }
 
     final (ReceivePort receivePort, SendPort sendPort) = await connection.future;
-
     return EvaluatorManager._(receivePort, sendPort);
   }
 
@@ -87,104 +68,24 @@ class EvaluatorManager {
     _receivePortFromIsolate.listen(_handleIsolateMessage);
   }
 
-  /// Constructs an evaluator with the provided options, and calls the action.
-  ///
-  /// After the action completes or throws, the evaluator is closed.
-  /// If [options] is not provided use preconfigured option
-  ///
-  ///   - [options]: The options used to configure the evaluator.
-  ///   - [action]: The action to run with the evaluator.
-  static Future<T> withEvaluator<T>({
-    required EvaluationAction action,
-    EvaluatorOptions? options,
-  }) async {
-    final configuredOption = options ?? await EvaluatorOptions.preconfigured;
-    return await _withEvaluator(options: configuredOption, action: action);
-  }
-
-  static Future<T> _withEvaluator<T>({
-    required EvaluationAction action,
-    required EvaluatorOptions options,
-  }) async {
-    final manager = await spawn();
-    final evaluator = await manager.newEvaluator(options: options);
-    try {
-      final result = await action(evaluator);
-      return result;
-    } catch (e) {
-      rethrow;
-    } finally {
-      manager.close();
-    }
-  }
-
-  /// Constructs an evaluator that is configured by the project within the project dir.
-  ///
-  /// `options` is the base set of evaluator options.
-  /// Any `evaluatorSettings` set within the PklProject file overwrites any fields set on `options`.
-  ///
-  /// After the action completes or throws, the evaluator is closed.
-  /// If [options] is not provided, preconfigured version is used.
-  ///
-  ///   - [projectBaseUri]: The project base path that contains the PklProject file.
-  ///   - [options]: The options used to configure the evaluator.
-  ///   - [action]: The action to run with the evaluator.
-  static Future<T> withProjectEvaluator<T>({
-    required Uri projectBaseUri,
-    required EvaluationAction action,
-    EvaluatorOptions? options,
-  }) async {
-    final configuredOption = options ?? await EvaluatorOptions.preconfigured;
-    return await _withProjectEvaluator(
-      projectBaseUri: projectBaseUri,
-      options: configuredOption,
-      action: action,
-    );
-  }
-
-  static Future<T> _withProjectEvaluator<T>({
-    required Uri projectBaseUri,
-    required EvaluatorOptions options,
-    required EvaluationAction action,
-  }) async {
-    final manager = await spawn();
-    final evaluator = await manager.newProjectEvaluator(
-      projectBaseUri: projectBaseUri,
-      options: options,
-    );
-    try {
-      final result = await action(evaluator);
-      return result;
-    } catch (e) {
-      rethrow;
-    } finally {
-      manager.close();
-    }
-  }
-
   /// Creates a new evaluator with the provided options.
-  ///
-  /// To create an evaluator that understands project dependencies, use
-  /// `newProjectEvaluator(projectBaseURI:options:)`.
-  ///
-  /// - [options]: The options used to configure the evaluator.
   Future<Evaluator> newEvaluator({EvaluatorOptions? options}) async {
-    options = options ?? await EvaluatorOptions.preconfigured;
+    options ??= await EvaluatorOptions.preconfigured;
     if (_isClosed) {
       throw PklError(
-        'The evaluator manager is closed. Create new manager by calling EvaluatorManager.spawn() or EvaluatorManager.withEvaluator()',
+        'The evaluator manager is closed. Create a new manager by calling EvaluatorManager.spawn().',
       );
     }
 
     // Register readers and logger, get their IDs
-    final List<ResourceReaderMessage> clientResourceReaders = [];
+    final clientResourceReaders = <ResourceReaderMessage>[];
     for (final reader in options.resourceReaders ?? <ResourceReader>[]) {
       final id = _nextReaderId++;
       _resourceReaders[id] = reader;
       clientResourceReaders.add(reader.toMessage(id));
     }
 
-    final List<ModuleReaderMessage> clientModuleReaders = [];
+    final clientModuleReaders = <ModuleReaderMessage>[];
     for (final reader in options.moduleReaders ?? <ModuleReader>[]) {
       final id = _nextReaderId++;
       _moduleReaders[id] = reader;
@@ -220,10 +121,11 @@ class EvaluatorManager {
       ),
     );
 
-    final evaluator = Evaluator.create(
+    final evaluator = Evaluator(
       evaluatorId: evaluatorId as int,
       managerSendPort: _sendPortToIsolate,
       commandCompleters: _commandCompleters,
+      generateCommandId: () => _nextCommandId++,
     );
     _evaluatorProxies[evaluatorId] = evaluator;
 
@@ -232,30 +134,27 @@ class EvaluatorManager {
 
   /// Creates a new evaluator that is configured from the provided project.
   ///
-  /// `options` is the base set of evaluator options.
-  /// Any `evaluatorSettings` set within the PklProject file overwrites any fields set on `options`.
-  ///
-  ///   - [projectBaseUri]: The project base path containing the `PklProject` file.
-  ///   - [options]: The base options used to configure the evaluator.
-  Future<Evaluator> newProjectEvaluator({
-    required Uri projectBaseUri,
-    EvaluatorOptions? options,
-  }) async {
-    /// Loads a project by creating a temporary evaluator
-    final preconfigured = await EvaluatorOptions.preconfigured;
-    options = options ?? preconfigured;
-    return await withEvaluator(
-      options: preconfigured,
-      action: (ev) async {
-        final result =
-            await ev.evaluateModule(ModuleSource.uri(projectBaseUri)) as Map<String, dynamic>;
+  /// The provided [uri] should be the base uri of the project.
+  Future<Evaluator> newProjectEvaluator({required Uri uri, EvaluatorOptions? options}) async {
+    // This helper creates a temporary evaluator on the current manager,
+    // runs an action, and guarantees its cleanup without spawning a new isolate.
+    Future<T> withTempEvaluator<T>(Future<T> Function(Evaluator) action) async {
+      final tempEvaluator = await newEvaluator(options: await EvaluatorOptions.preconfigured);
+      try {
+        return await action(tempEvaluator);
+      } finally {
+        await tempEvaluator.close();
+      }
+    }
 
-        // Deserialize the result into our Dart Project model
-        final project = Project.fromJson(result);
+    // Use the temporary evaluator to read the project file.
+    final project = await withTempEvaluator((tempEv) async {
+      final result = await tempEv.evaluateModule(ModuleSource.uri(uri)) as Map<String, dynamic>;
+      return Project.fromJson(result);
+    });
 
-        return await newEvaluator(options: options!.withProject(project));
-      },
-    );
+    final finalOptions = (options ?? await EvaluatorOptions.preconfigured).withProject(project);
+    return await newEvaluator(options: finalOptions);
   }
 
   /// Closes the evaluator manager, and closes any evaluators that have spawned.
@@ -264,15 +163,11 @@ class EvaluatorManager {
       return;
     }
     _isClosed = true;
-
-    // Send close command to background isolate
     await _sendCommand(CloseManagerCommand(_nextCommandId++));
-
-    // Close the receive port, which will cause the background isolate to exit
     _receivePortFromIsolate.close();
   }
 
-  // Internal method to send commands to the background Isolate
+  // Send commands to the background Isolate
   Future<dynamic> _sendCommand(IsolateCommand command) async {
     final completer = Completer<dynamic>();
     _commandCompleters[command.commandId] = completer;
@@ -284,7 +179,7 @@ class EvaluatorManager {
     return result;
   }
 
-  // Internal method to handle messages from the background Isolate
+  // Handle messages from the background Isolate
   void _handleIsolateMessage(dynamic message) {
     if (message is IsolateResponse) {
       final completer = _commandCompleters.remove(message.commandId);
@@ -304,7 +199,7 @@ class EvaluatorManager {
     }
   }
 
-  // Internal method to handle callbacks from the background Isolate
+  // Handle callbacks from the background Isolate
   void _handleIsolateCallback(IsolateCallback callback) async {
     try {
       dynamic result;
@@ -329,7 +224,6 @@ class EvaluatorManager {
             throw PklError('ModuleReader with ID ${cb.readerId} not found.');
           }
           result = await reader.listElements(uri: cb.uri);
-          // Convert PathElement to PathElementMessage if necessary
           result = (result as List<PathElement>).map((e) => e.toMessage()).toList();
           break;
         case ListResourcesCallback cb:
@@ -338,7 +232,6 @@ class EvaluatorManager {
             throw PklError('ResourceReader with ID ${cb.readerId} not found.');
           }
           result = await reader.listElements(uri: cb.uri);
-          // Convert PathElement to PathElementMessage if necessary
           result = (result as List<PathElement>).map((e) => e.toMessage()).toList();
           break;
         case LogCallback cb:

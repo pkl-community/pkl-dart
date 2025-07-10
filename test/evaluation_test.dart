@@ -14,7 +14,7 @@ void main() {
 
   group('Pkl Evaluation Tests', () {
     test('decodes classes and primitives from classes.pkl', () async {
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('classes.pkl'));
 
         final age = await evaluator.evaluateExpression(source: source, expression: 'age');
@@ -34,7 +34,7 @@ void main() {
     });
 
     test('decodes various Any types from any.pkl', () async {
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('any.pkl'));
 
         expect(await evaluator.evaluateExpression(source: source, expression: 'bird'), {
@@ -79,7 +79,7 @@ void main() {
     });
 
     test('decodes various collection types from collections.pkl', () async {
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('collections.pkl'));
 
         expect(await evaluator.evaluateExpression(source: source, expression: 'res1'), [1, 2, 3]);
@@ -121,7 +121,7 @@ void main() {
     });
 
     test('evaluates a module that extends an open module', () async {
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('openModule.pkl'));
         final result = await evaluator.evaluateModule(source) as Map<String, dynamic>;
         expect(result['bar'], 0);
@@ -131,7 +131,7 @@ void main() {
         );
         expect(mod.bar, 0);
       });
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('extendsOpenModule.pkl'));
         final result = await evaluator.evaluateModule(source) as Map<String, dynamic>;
         expect(result['foo'], 'foo');
@@ -147,7 +147,7 @@ void main() {
     });
 
     test('decodes polymorphic objects from poly.pkl', () async {
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('poly.pkl'));
 
         final beingsResult =
@@ -187,7 +187,7 @@ void main() {
     });
 
     test('decodes union types from unions.pkl', () async {
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('unions.pkl'));
 
         // Test class-based unions
@@ -246,7 +246,7 @@ void main() {
     });
 
     test('evaluates output.text and output.files from outputs.pkl', () async {
-      await withEvaluatorPreconfigured((evaluator) async {
+      await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('outputs.pkl'));
 
         final text = await evaluator.evaluateOutputText(source);
