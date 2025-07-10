@@ -20,7 +20,8 @@ class PklObjectDecoder {
   ///
   /// The optional [codingPath] is used internally for tracking the location
   /// of nested decoding errors.
-  PklObjectDecoder(this._map, {List<String> codingPath = const []}) : _codingPath = codingPath;
+  PklObjectDecoder(this._map, {List<String> codingPath = const []})
+    : _codingPath = codingPath;
 
   /// Decodes a value for the given [key] and casts it to type [T].
   ///

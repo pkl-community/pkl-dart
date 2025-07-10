@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:pkl_dart/src/evaluation/logger.dart';
+import '../evaluation/logger.dart';
 
 import 'message_pack_value.dart';
 
@@ -89,7 +89,11 @@ class MessagePackCodec {
       case null:
         writer.writeByte(_MessagePackFormat.nil);
       case bool():
-        writer.writeByte(value ? _MessagePackFormat.booleanTrue : _MessagePackFormat.booleanFalse);
+        writer.writeByte(
+          value
+              ? _MessagePackFormat.booleanTrue
+              : _MessagePackFormat.booleanFalse,
+        );
       case int():
         _encodeInt(writer, value);
       case double():
@@ -105,7 +109,9 @@ class MessagePackCodec {
       case MessagePackExt():
         _encodeExtension(writer, value);
       default:
-        throw ArgumentError('Unsupported type for MessagePack encoding: ${value.runtimeType}');
+        throw ArgumentError(
+          'Unsupported type for MessagePack encoding: ${value.runtimeType}',
+        );
     }
   }
 
@@ -165,7 +171,9 @@ class MessagePackCodec {
       writer.writeByte(_MessagePackFormat.str32);
       writer.writeBytes(_uint32ToBytes(length));
     } else {
-      throw ArgumentError('String length exceeds MessagePack limit (2^32-1 bytes): $length');
+      throw ArgumentError(
+        'String length exceeds MessagePack limit (2^32-1 bytes): $length',
+      );
     }
     writer.writeBytes(bytes);
   }
@@ -184,7 +192,9 @@ class MessagePackCodec {
       writer.writeByte(_MessagePackFormat.bin32);
       writer.writeBytes(_uint32ToBytes(length));
     } else {
-      throw ArgumentError('Binary length exceeds MessagePack limit (2^32-1 bytes): $length');
+      throw ArgumentError(
+        'Binary length exceeds MessagePack limit (2^32-1 bytes): $length',
+      );
     }
     writer.writeBytes(value);
   }
@@ -202,7 +212,9 @@ class MessagePackCodec {
       writer.writeByte(_MessagePackFormat.array32);
       writer.writeBytes(_uint32ToBytes(length));
     } else {
-      throw ArgumentError('Array length exceeds MessagePack limit (2^32-1 elements): $length');
+      throw ArgumentError(
+        'Array length exceeds MessagePack limit (2^32-1 elements): $length',
+      );
     }
     for (final item in value) {
       _encodeValue(writer, item);
@@ -212,26 +224,38 @@ class MessagePackCodec {
   /// Encode array header
   void encodeArrayHeader(MessagePackWriter writer, int length) {
     if (length <= 15) {
-      writer.writeBytes(Uint8List.fromList([_MessagePackFormat.fixArrayMin | length]));
+      writer.writeBytes(
+        Uint8List.fromList([_MessagePackFormat.fixArrayMin | length]),
+      );
     } else if (length <= 0xFFFF) {
       final lengthBytes = _uint16ToBytes(length);
-      writer.writeBytes(Uint8List.fromList([_MessagePackFormat.array16, ...lengthBytes]));
+      writer.writeBytes(
+        Uint8List.fromList([_MessagePackFormat.array16, ...lengthBytes]),
+      );
     } else {
       final lengthBytes = _uint32ToBytes(length);
-      writer.writeBytes(Uint8List.fromList([_MessagePackFormat.array32, ...lengthBytes]));
+      writer.writeBytes(
+        Uint8List.fromList([_MessagePackFormat.array32, ...lengthBytes]),
+      );
     }
   }
 
   /// Encode map header
   void encodeMapHeader(MessagePackWriter writer, int length) {
     if (length <= 15) {
-      writer.writeBytes(Uint8List.fromList([_MessagePackFormat.fixMapMin | length]));
+      writer.writeBytes(
+        Uint8List.fromList([_MessagePackFormat.fixMapMin | length]),
+      );
     } else if (length <= 0xFFFF) {
       final lengthBytes = _uint16ToBytes(length);
-      writer.writeBytes(Uint8List.fromList([_MessagePackFormat.map16, ...lengthBytes]));
+      writer.writeBytes(
+        Uint8List.fromList([_MessagePackFormat.map16, ...lengthBytes]),
+      );
     } else {
       final lengthBytes = _uint32ToBytes(length);
-      writer.writeBytes(Uint8List.fromList([_MessagePackFormat.map32, ...lengthBytes]));
+      writer.writeBytes(
+        Uint8List.fromList([_MessagePackFormat.map32, ...lengthBytes]),
+      );
     }
   }
 
@@ -248,7 +272,9 @@ class MessagePackCodec {
       writer.writeByte(_MessagePackFormat.map32);
       writer.writeBytes(_uint32ToBytes(length));
     } else {
-      throw ArgumentError('Map length exceeds MessagePack limit (2^32-1 elements): $length');
+      throw ArgumentError(
+        'Map length exceeds MessagePack limit (2^32-1 elements): $length',
+      );
     }
     value.forEach((key, val) {
       _encodeValue(writer, key);
@@ -444,7 +470,11 @@ class MessagePackCodec {
   }
 
   /// Decodes an Extension type from the reader.
-  MessagePackExt _decodeExtension(MessagePackReader reader, int length, int type) {
+  MessagePackExt _decodeExtension(
+    MessagePackReader reader,
+    int length,
+    int type,
+  ) {
     final offsetBeforeRead = reader.offset;
     final data = reader.readBytes(length);
     if (type == -1) {
@@ -560,7 +590,8 @@ class MessagePackDeserializationException implements Exception {
   MessagePackDeserializationException(this.message, this.offset);
 
   @override
-  String toString() => 'MessagePackDeserializationException at offset $offset: $message';
+  String toString() =>
+      'MessagePackDeserializationException at offset $offset: $message';
 }
 
 /// Extension on `int` to provide MessagePack format codes and checks.
@@ -719,7 +750,8 @@ abstract class MessagePackReader {
 }
 
 /// Default reader implementation
-class _DefaultMessagePackReader extends _ByteReader implements MessagePackReader {
+class _DefaultMessagePackReader extends _ByteReader
+    implements MessagePackReader {
   _DefaultMessagePackReader(super.bytes);
 
   @override
@@ -795,7 +827,9 @@ class _BufferedMessagePackReader implements MessagePackReader {
     if (_offset + length > _buffer.length) {
       throw const IncompleteReadException();
     }
-    final result = Uint8List.fromList(_buffer.sublist(_offset, _offset + length));
+    final result = Uint8List.fromList(
+      _buffer.sublist(_offset, _offset + length),
+    );
     _offset += length;
     return result;
   }
@@ -807,7 +841,8 @@ class _BufferedMessagePackReader implements MessagePackReader {
   Uint8List readBytes(int length) => _readBytes(length);
 
   @override
-  ByteData readBytesAsByteData(int length) => _readBytes(length).buffer.asByteData();
+  ByteData readBytesAsByteData(int length) =>
+      _readBytes(length).buffer.asByteData();
 
   @override
   int readInt8() => readBytesAsByteData(1).getInt8(0);
@@ -847,7 +882,8 @@ class MessagePackEncoder {
     _codec._encodeValue(writer, value);
   }
 
-  void encodeArrayHeader(int length) => _codec.encodeArrayHeader(writer, length);
+  void encodeArrayHeader(int length) =>
+      _codec.encodeArrayHeader(writer, length);
 
   void encodeMapHeader(int length) => _codec.encodeMapHeader(writer, length);
 }
@@ -855,7 +891,8 @@ class MessagePackEncoder {
 class MessagePackDecoder {
   final MessagePackCodec _codec;
 
-  MessagePackDecoder() : _codec = MessagePackCodec(reader: _BufferedMessagePackReader());
+  MessagePackDecoder()
+    : _codec = MessagePackCodec(reader: _BufferedMessagePackReader());
 
   void add(List<int> data) => _codec.add(data);
 

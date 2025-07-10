@@ -17,10 +17,16 @@ void main() {
       await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('classes.pkl'));
 
-        final age = await evaluator.evaluateExpression(source: source, expression: 'age');
+        final age = await evaluator.evaluateExpression(
+          source: source,
+          expression: 'age',
+        );
         expect(age, 23);
 
-        final animals = await evaluator.evaluateExpression(source: source, expression: 'animals');
+        final animals = await evaluator.evaluateExpression(
+          source: source,
+          expression: 'animals',
+        );
         expect(animals, isA<List>());
         final animalList = (animals as List)
             .map((it) => Animal.fromPkl(it as Map<String, dynamic>))
@@ -37,18 +43,52 @@ void main() {
       await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('any.pkl'));
 
-        expect(await evaluator.evaluateExpression(source: source, expression: 'bird'), {
-          'species': 'Owl',
-        });
-        expect(await evaluator.evaluateExpression(source: source, expression: 'primitive'), 'foo');
-        expect(await evaluator.evaluateExpression(source: source, expression: 'primitive2'), 12);
-        expect(await evaluator.evaluateExpression(source: source, expression: 'array'), [1, 2]);
-        expect(await evaluator.evaluateExpression(source: source, expression: 'set'), {5, 6});
-        expect(await evaluator.evaluateExpression(source: source, expression: 'mapping'), {
-          '1': 12,
-          12: '1',
-        });
-        expect(await evaluator.evaluateExpression(source: source, expression: 'nullable'), isNull);
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'bird',
+          ),
+          {'species': 'Owl'},
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'primitive',
+          ),
+          'foo',
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'primitive2',
+          ),
+          12,
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'array',
+          ),
+          [1, 2],
+        );
+        expect(
+          await evaluator.evaluateExpression(source: source, expression: 'set'),
+          {5, 6},
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'mapping',
+          ),
+          {'1': 12, 12: '1'},
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'nullable',
+          ),
+          isNull,
+        );
         expect(
           await evaluator.evaluateModuleAs<PklDuration>(
             source: source,
@@ -58,15 +98,21 @@ void main() {
           PklDuration.minutes(5),
         );
 
-        expect(await evaluator.evaluateExpression(source: source, expression: 'duration'), {
-          'value': 5.0,
-          'unit': 'min',
-        });
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'duration',
+          ),
+          {'value': 5.0, 'unit': 'min'},
+        );
 
-        expect(await evaluator.evaluateExpression(source: source, expression: 'dataSize'), {
-          'value': 10.0,
-          'unit': 'mb',
-        });
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'dataSize',
+          ),
+          {'value': 10.0, 'unit': 'mb'},
+        );
         expect(
           await evaluator.evaluateModuleAs<DataSize>(
             source: source,
@@ -82,48 +128,99 @@ void main() {
       await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('collections.pkl'));
 
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res1'), [1, 2, 3]);
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res2'), [2, 3, 4]);
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res3'), [
-          [1],
-          [2],
-          [3],
-        ]);
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res4'), [
-          [1],
-          [2],
-          [3],
-        ]);
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res5'), {
-          1: true,
-          2: false,
-        });
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res6'), {
-          1: {1: true},
-          2: {2: true},
-          3: {3: true},
-        });
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res7'), {
-          1: true,
-          2: false,
-        });
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res8'), {
-          1: {1: true},
-          2: {2: false},
-        });
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res9'), {
-          'one',
-          'two',
-          'three',
-        });
-        expect(await evaluator.evaluateExpression(source: source, expression: 'res10'), {1, 2, 3});
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res1',
+          ),
+          [1, 2, 3],
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res2',
+          ),
+          [2, 3, 4],
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res3',
+          ),
+          [
+            [1],
+            [2],
+            [3],
+          ],
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res4',
+          ),
+          [
+            [1],
+            [2],
+            [3],
+          ],
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res5',
+          ),
+          {1: true, 2: false},
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res6',
+          ),
+          {
+            1: {1: true},
+            2: {2: true},
+            3: {3: true},
+          },
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res7',
+          ),
+          {1: true, 2: false},
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res8',
+          ),
+          {
+            1: {1: true},
+            2: {2: false},
+          },
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res9',
+          ),
+          {'one', 'two', 'three'},
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'res10',
+          ),
+          {1, 2, 3},
+        );
       });
     });
 
     test('evaluates a module that extends an open module', () async {
       await Evaluator.run((evaluator) async {
         final source = ModuleSource.uri(fixturesUri.resolve('openModule.pkl'));
-        final result = await evaluator.evaluateModule(source) as Map<String, dynamic>;
+        final result =
+            await evaluator.evaluateModule(source) as Map<String, dynamic>;
         expect(result['bar'], 0);
         final mod = await evaluator.evaluateModuleAs<OpenModule>(
           source: source,
@@ -132,8 +229,11 @@ void main() {
         expect(mod.bar, 0);
       });
       await Evaluator.run((evaluator) async {
-        final source = ModuleSource.uri(fixturesUri.resolve('extendsOpenModule.pkl'));
-        final result = await evaluator.evaluateModule(source) as Map<String, dynamic>;
+        final source = ModuleSource.uri(
+          fixturesUri.resolve('extendsOpenModule.pkl'),
+        );
+        final result =
+            await evaluator.evaluateModule(source) as Map<String, dynamic>;
         expect(result['foo'], 'foo');
         expect(result['bar'], 10);
 
@@ -151,7 +251,11 @@ void main() {
         final source = ModuleSource.uri(fixturesUri.resolve('poly.pkl'));
 
         final beingsResult =
-            await evaluator.evaluateExpression(source: source, expression: 'beings') as List;
+            await evaluator.evaluateExpression(
+                  source: source,
+                  expression: 'beings',
+                )
+                as List;
         final beings = beingsResult
             .map((it) => poly.Being.fromPkl(it as Map<String, dynamic>))
             .toList();
@@ -170,7 +274,11 @@ void main() {
 
         // Decode  mapping of polymorphic objects
         final moreBeingsResult =
-            await evaluator.evaluateExpression(source: source, expression: 'moreBeings') as Map;
+            await evaluator.evaluateExpression(
+                  source: source,
+                  expression: 'moreBeings',
+                )
+                as Map;
         final moreBeings = moreBeingsResult.map(
           (k, v) => MapEntry(k, poly.Being.fromPkl(v as Map<String, dynamic>)),
         );
@@ -218,10 +326,19 @@ void main() {
 
         // Test string literal unions
         expect(
-          await evaluator.evaluateExpression(source: source, expression: 'city1'),
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'city1',
+          ),
           'San Francisco',
         );
-        expect(await evaluator.evaluateExpression(source: source, expression: 'city4'), 'London');
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'city4',
+          ),
+          'London',
+        );
 
         // Test unions of different kinds (class and primitive)
         final animalOrString1 = await evaluator.evaluateExpression(
@@ -240,8 +357,20 @@ void main() {
         expect(animalOrString2, 'Zebra');
 
         // Test numeric unions
-        expect(await evaluator.evaluateExpression(source: source, expression: 'intOrFloat1'), 5);
-        expect(await evaluator.evaluateExpression(source: source, expression: 'intOrFloat2'), 5.5);
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'intOrFloat1',
+          ),
+          5,
+        );
+        expect(
+          await evaluator.evaluateExpression(
+            source: source,
+            expression: 'intOrFloat2',
+          ),
+          5.5,
+        );
       });
     });
 

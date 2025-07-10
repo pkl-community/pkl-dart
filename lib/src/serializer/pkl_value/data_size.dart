@@ -21,31 +21,36 @@ class DataSize extends PklValue implements PklDecodable {
   DataSize.kilobytes(num value) : this(value.toDouble(), unit: DataSizeUnit.kb);
 
   /// Creates a DataSize with kibibytes.
-  DataSize.kibibytes(num value) : this(value.toDouble(), unit: DataSizeUnit.kib);
+  DataSize.kibibytes(num value)
+    : this(value.toDouble(), unit: DataSizeUnit.kib);
 
   /// Creates a DataSize with megabytes.
   DataSize.megabytes(num value) : this(value.toDouble(), unit: DataSizeUnit.mb);
 
   /// Creates a DataSize with mebibytes.
-  DataSize.mebibytes(num value) : this(value.toDouble(), unit: DataSizeUnit.mib);
+  DataSize.mebibytes(num value)
+    : this(value.toDouble(), unit: DataSizeUnit.mib);
 
   /// Creates a DataSize with gigabytes.
   DataSize.gigabytes(num value) : this(value.toDouble(), unit: DataSizeUnit.gb);
 
   /// Creates a DataSize with gibibytes.
-  DataSize.gibibytes(num value) : this(value.toDouble(), unit: DataSizeUnit.gib);
+  DataSize.gibibytes(num value)
+    : this(value.toDouble(), unit: DataSizeUnit.gib);
 
   /// Creates a DataSize with terabytes.
   DataSize.terabytes(num value) : this(value.toDouble(), unit: DataSizeUnit.tb);
 
   /// Creates a DataSize with tebibytes.
-  DataSize.tebibytes(num value) : this(value.toDouble(), unit: DataSizeUnit.tib);
+  DataSize.tebibytes(num value)
+    : this(value.toDouble(), unit: DataSizeUnit.tib);
 
   /// Creates a DataSize with petabytes.
   DataSize.petabytes(num value) : this(value.toDouble(), unit: DataSizeUnit.pb);
 
   /// Creates a DataSize with pebibytes.
-  DataSize.pebibytes(num value) : this(value.toDouble(), unit: DataSizeUnit.pib);
+  DataSize.pebibytes(num value)
+    : this(value.toDouble(), unit: DataSizeUnit.pib);
 
   /// Convert [elements] to a [DataSize].
   factory DataSize.fromMsp(List<MessagePackValue> elements) {
@@ -59,12 +64,18 @@ class DataSize extends PklValue implements PklDecodable {
   factory DataSize.fromPkl(Map<String, dynamic> map) {
     final decoder = PklObjectDecoder(map);
 
-    return DataSize(decoder.decode('value'), unit: DataSizeUnit.fromString(decoder.decode('unit')));
+    return DataSize(
+      decoder.decode('value'),
+      unit: DataSizeUnit.fromString(decoder.decode('unit')),
+    );
   }
 
   /// Converts this [DataSize] to the specified unit.
   DataSize toUnit(DataSizeUnit unit) {
-    return DataSize(value * this.unit.factorForConversion(to: unit), unit: unit);
+    return DataSize(
+      value * this.unit.factorForConversion(to: unit),
+      unit: unit,
+    );
   }
 
   @override

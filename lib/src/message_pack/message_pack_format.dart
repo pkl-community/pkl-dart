@@ -1,4 +1,4 @@
-/// An extension type based on [int] 
+/// An extension type based on [int]
 /// to provide MessagePack format codes and checks.
 extension type MessagePackFormat(int _) implements int {
   // --- Ranges ---

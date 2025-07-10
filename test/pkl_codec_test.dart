@@ -3,12 +3,13 @@
 // LICENSE file in the root directory of this source tree.
 
 import 'dart:typed_data';
-import 'package:pkl_dart/src/serializer/pkl_decoder.dart';
-import 'package:test/test.dart';
+
 import 'package:pkl_dart/src/message_pack/message_pack.dart';
-import 'package:pkl_dart/src/serializer/pkl_encoder.dart';
-import 'package:pkl_dart/src/serializer/pkl_data_model.dart';
 import 'package:pkl_dart/src/pkl_type_codes.dart';
+import 'package:pkl_dart/src/serializer/pkl_data_model.dart';
+import 'package:pkl_dart/src/serializer/pkl_decoder.dart';
+import 'package:pkl_dart/src/serializer/pkl_encoder.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('PklCodec (Encoder & Decoder)', () {
@@ -36,7 +37,10 @@ void main() {
         expect(encoder.encode(true), equals(MessagePackCodec().encode(true)));
         expect(encoder.encode(123), equals(MessagePackCodec().encode(123)));
         expect(encoder.encode(3.14), equals(MessagePackCodec().encode(3.14)));
-        expect(encoder.encode('hello'), equals(MessagePackCodec().encode('hello')));
+        expect(
+          encoder.encode('hello'),
+          equals(MessagePackCodec().encode('hello')),
+        );
         final bytes = Uint8List.fromList([1, 2, 3]);
         expect(encoder.encode(bytes), equals(MessagePackCodec().encode(bytes)));
       });
@@ -104,19 +108,28 @@ void main() {
 
       test('should encode PklDuration', () {
         final duration = PklDuration.seconds(1.5);
-        final expectedRawMp = expectedPklArray(PklTypeCodes.duration, [1.5, 's']);
+        final expectedRawMp = expectedPklArray(PklTypeCodes.duration, [
+          1.5,
+          's',
+        ]);
         expect(encoder.encode(duration), equals(expectedRawMp));
       });
 
       test('should encode PklDataSize', () {
         final dataSize = DataSize.kilobytes(1024.0);
-        final expectedRawMp = expectedPklArray(PklTypeCodes.dataSize, [1024.0, 'kb']);
+        final expectedRawMp = expectedPklArray(PklTypeCodes.dataSize, [
+          1024.0,
+          'kb',
+        ]);
         expect(encoder.encode(dataSize), equals(expectedRawMp));
       });
 
       test('should encode PklPair', () {
         final pair = PklPair(first: 'first', second: 123);
-        final expectedRawMp = expectedPklArray(PklTypeCodes.pair, ['first', 123]);
+        final expectedRawMp = expectedPklArray(PklTypeCodes.pair, [
+          'first',
+          123,
+        ]);
         expect(encoder.encode(pair), equals(expectedRawMp));
       });
 
@@ -128,7 +141,9 @@ void main() {
 
       test('should encode PklRegex', () {
         final regex = PklRegex(value: r'^[a-z]+$');
-        final expectedRawMp = expectedPklArray(PklTypeCodes.regex, [r'^[a-z]+$']);
+        final expectedRawMp = expectedPklArray(PklTypeCodes.regex, [
+          r'^[a-z]+$',
+        ]);
         expect(encoder.encode(regex), equals(expectedRawMp));
       });
 
@@ -155,18 +170,27 @@ void main() {
 
       test('should encode PklEntry', () {
         final entry = PklEntry(key: 1, value: 'one');
-        final expectedRawMp = expectedPklMemberArray(PklTypeCodes.entry, [1, 'one']);
+        final expectedRawMp = expectedPklMemberArray(PklTypeCodes.entry, [
+          1,
+          'one',
+        ]);
         expect(encoder.encode(entry), equals(expectedRawMp));
       });
 
       test('should encode PklElement', () {
         final element = PklElement(index: 0, value: 'firstElement');
-        final expectedRawMp = expectedPklMemberArray(PklTypeCodes.element, [0, 'firstElement']);
+        final expectedRawMp = expectedPklMemberArray(PklTypeCodes.element, [
+          0,
+          'firstElement',
+        ]);
         expect(encoder.encode(element), equals(expectedRawMp));
       });
 
       test('should throw ArgumentError for unsupported types', () {
-        expect(() => encoder.encode(DateTime.now()), throwsA(isA<ArgumentError>()));
+        expect(
+          () => encoder.encode(DateTime.now()),
+          throwsA(isA<ArgumentError>()),
+        );
         // Raw Map/List are not PklValue types and should throw
         expect(() => encoder.encode({'a': 1}), throwsA(isA<ArgumentError>()));
         expect(() => encoder.encode([1, 2]), throwsA(isA<ArgumentError>()));
@@ -179,10 +203,19 @@ void main() {
         expect(decoder.decodePkl(MessagePackCodec().encode(null)), isNull);
         expect(decoder.decodePkl(MessagePackCodec().encode(true)), isTrue);
         expect(decoder.decodePkl(MessagePackCodec().encode(123)), equals(123));
-        expect(decoder.decodePkl(MessagePackCodec().encode(3.14)), equals(3.14));
-        expect(decoder.decodePkl(MessagePackCodec().encode('hello')), equals('hello'));
+        expect(
+          decoder.decodePkl(MessagePackCodec().encode(3.14)),
+          equals(3.14),
+        );
+        expect(
+          decoder.decodePkl(MessagePackCodec().encode('hello')),
+          equals('hello'),
+        );
         final bytes = Uint8List.fromList([1, 2, 3]);
-        expect(decoder.decodePkl(MessagePackCodec().encode(bytes)), equals(bytes));
+        expect(
+          decoder.decodePkl(MessagePackCodec().encode(bytes)),
+          equals(bytes),
+        );
       });
 
       // Test decoding of PklValue types
@@ -247,7 +280,9 @@ void main() {
 
       test('should decode PklSet', () {
         const expectedSet = {1, 2, 3};
-        final rawMp = expectedPklArray(PklTypeCodes.set, [List.from(expectedSet)]);
+        final rawMp = expectedPklArray(PklTypeCodes.set, [
+          List.from(expectedSet),
+        ]);
         final decoded = decoder.decode(rawMp);
         expect(decoded, isA<Set>());
         expect(decoded, equals(expectedSet));
@@ -297,7 +332,10 @@ void main() {
 
       // Test decoding of PklMember types (when they are top-level, though usually nested)
       test('should decode PklProperty (top-level)', () {
-        final rawMp = expectedPklMemberArray(PklTypeCodes.property, ['myProp', 'someValue']);
+        final rawMp = expectedPklMemberArray(PklTypeCodes.property, [
+          'myProp',
+          'someValue',
+        ]);
         final decoded = decoder.decodePkl(rawMp);
         expect(decoded, equals(PklProperty(key: 'myProp', value: 'someValue')));
       });
@@ -309,24 +347,39 @@ void main() {
       });
 
       test('should decode PklElement (top-level)', () {
-        final rawMp = expectedPklMemberArray(PklTypeCodes.element, [0, 'firstElement']);
+        final rawMp = expectedPklMemberArray(PklTypeCodes.element, [
+          0,
+          'firstElement',
+        ]);
         final decoded = decoder.decodePkl(rawMp);
         expect(decoded, equals(PklElement(index: 0, value: 'firstElement')));
       });
 
       test('should throw FormatException for empty Pkl array', () {
         final emptyArrayMp = MessagePackCodec().encode([]);
-        expect(() => decoder.decodePkl(emptyArrayMp), throwsA(isA<FormatException>()));
+        expect(
+          () => decoder.decodePkl(emptyArrayMp),
+          throwsA(isA<FormatException>()),
+        );
       });
 
       test('should throw FormatException for unknown Pkl type code', () {
-        final unknownCodeMp = MessagePackCodec().encode([999, 'data']); // 999 is an unknown code
-        expect(() => decoder.decodePkl(unknownCodeMp), throwsA(isA<FormatException>()));
+        final unknownCodeMp = MessagePackCodec().encode([
+          999,
+          'data',
+        ]); // 999 is an unknown code
+        expect(
+          () => decoder.decodePkl(unknownCodeMp),
+          throwsA(isA<FormatException>()),
+        );
       });
 
       test('should throw FormatException for invalid Pkl array structure', () {
         final badTypedMp = expectedPklArray(PklTypeCodes.object, ['fqcn_only']);
-        expect(() => decoder.decodePkl(badTypedMp), throwsA(isA<FormatException>()));
+        expect(
+          () => decoder.decodePkl(badTypedMp),
+          throwsA(isA<FormatException>()),
+        );
       });
     });
 
@@ -398,7 +451,12 @@ void main() {
           second: PklObject(
             fqcn: 'NestedType',
             moduleUri: 'nested.pkl',
-            members: [PklProperty(key: 'nestedProp', value: PklIntSeq(start: 1, end: 3, step: 1))],
+            members: [
+              PklProperty(
+                key: 'nestedProp',
+                value: PklIntSeq(start: 1, end: 3, step: 1),
+              ),
+            ],
           ),
         );
         final encoded = encoder.encode(original);

@@ -6,23 +6,25 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 import '../message.dart';
 import '../serializer/pkl_decodable.dart';
 import '../serializer/pkl_decoder.dart';
 import 'evaluator_manager.dart';
+import 'evaluator_options.dart';
+import 'manager_messages.dart';
 import 'module_source.dart';
 import 'pkl_error.dart';
-import 'evaluator_options.dart';
-
-import 'manager_messages.dart';
-import 'package:meta/meta.dart';
 
 /// A type alias for an action to be performed with a temporary evaluator.
 typedef EvaluationAction<T> = Future<T> Function(Evaluator);
 
 /// Helper that performs an [action] with a manager and ensures
 /// the manager is closed afterward.
-Future<T> _withEvaluatorManager<T>(Future<T> Function(EvaluatorManager) action) async {
+Future<T> _withEvaluatorManager<T>(
+  Future<T> Function(EvaluatorManager) action,
+) async {
   final manager = await EvaluatorManager.spawn();
   try {
     return await action(manager);
@@ -84,7 +86,10 @@ class Evaluator {
   ///   });
   /// ```
   ///
-  static Future<T> run<T>(EvaluationAction<T> action, {EvaluatorOptions? options}) async {
+  static Future<T> run<T>(
+    EvaluationAction<T> action, {
+    EvaluatorOptions? options,
+  }) async {
     final resolvedOptions = options ?? await EvaluatorOptions.preconfigured;
     return await _withEvaluatorManager((manager) async {
       final evaluator = await manager.newEvaluator(options: resolvedOptions);
@@ -106,7 +111,10 @@ class Evaluator {
   }) async {
     final resolvedOptions = options ?? await EvaluatorOptions.preconfigured;
     return await _withEvaluatorManager((manager) async {
-      final evaluator = await manager.newProjectEvaluator(uri: uri, options: resolvedOptions);
+      final evaluator = await manager.newProjectEvaluator(
+        uri: uri,
+        options: resolvedOptions,
+      );
       return await action(evaluator);
     });
   }
@@ -135,7 +143,11 @@ class Evaluator {
     required PklFactory<T> fromPkl,
     String? expression,
   }) async {
-    return evaluateExpressionAs<T>(source: source, fromPkl: fromPkl, expression: expression);
+    return evaluateExpressionAs<T>(
+      source: source,
+      fromPkl: fromPkl,
+      expression: expression,
+    );
   }
 
   /// Evaluates the provided [expression] within [source] and decodes the result
@@ -145,7 +157,10 @@ class Evaluator {
     required PklFactory<T> fromPkl,
     String? expression,
   }) async {
-    final dynamic result = await evaluateExpression(source: source, expression: expression);
+    final dynamic result = await evaluateExpression(
+      source: source,
+      expression: expression,
+    );
 
     if (result is! Map<String, dynamic>) {
       throw PklError(
@@ -165,7 +180,10 @@ class Evaluator {
 
   /// Evaluates the provided module's `output.text` property.
   Future<String> evaluateOutputText(ModuleSource source) async {
-    final result = await evaluateExpression(source: source, expression: 'output.text');
+    final result = await evaluateExpression(
+      source: source,
+      expression: 'output.text',
+    );
     return result as String;
   }
 
@@ -186,8 +204,14 @@ class Evaluator {
   }
 
   /// Evaluates the provided [expression] within [source].
-  Future<dynamic> evaluateExpression({required ModuleSource source, String? expression}) async {
-    final bytes = await evaluateExpressionRaw(source: source, expression: expression);
+  Future<dynamic> evaluateExpression({
+    required ModuleSource source,
+    String? expression,
+  }) async {
+    final bytes = await evaluateExpressionRaw(
+      source: source,
+      expression: expression,
+    );
     return PklDecoder().decode(bytes);
   }
 
@@ -205,7 +229,9 @@ class Evaluator {
       expr: expression,
     );
 
-    final response = await _sendCommand(AskCommand(_generateCommandId(), request));
+    final response = await _sendCommand(
+      AskCommand(_generateCommandId(), request),
+    );
 
     if (response is! EvaluateResponse) {
       throw PklBugError.invalidMessageCode(
@@ -223,6 +249,8 @@ class Evaluator {
 
   /// Closes this evaluator, cleaning up any resources held by the evaluator.
   Future<void> close() async {
-    await _sendCommand(CloseEvaluatorCommand(_generateCommandId(), _evaluatorId));
+    await _sendCommand(
+      CloseEvaluatorCommand(_generateCommandId(), _evaluatorId),
+    );
   }
 }

@@ -67,12 +67,13 @@ class ModuleReaderMessage {
     'isGlobbable': isGlobbable,
   };
 
-  factory ModuleReaderMessage.fromJson(Map<String, dynamic> json) => ModuleReaderMessage(
-    scheme: json['scheme'] as String,
-    hasHierarchicalUris: json['hasHierarchicalUris'] as bool,
-    isLocal: json['isLocal'] as bool,
-    isGlobbable: json['isGlobbable'] as bool,
-  );
+  factory ModuleReaderMessage.fromJson(Map<String, dynamic> json) =>
+      ModuleReaderMessage(
+        scheme: json['scheme'] as String,
+        hasHierarchicalUris: json['hasHierarchicalUris'] as bool,
+        isLocal: json['isLocal'] as bool,
+        isGlobbable: json['isGlobbable'] as bool,
+      );
 
   Map<String, dynamic> propertyMap() {
     final map = toJson();
@@ -101,11 +102,12 @@ class ResourceReaderMessage {
     'isGlobbable': isGlobbable,
   };
 
-  factory ResourceReaderMessage.fromJson(Map<String, dynamic> json) => ResourceReaderMessage(
-    scheme: json['scheme'] as String,
-    hasHierarchicalUris: json['hasHierarchicalUris'] as bool,
-    isGlobbable: json['isGlobbable'] as bool,
-  );
+  factory ResourceReaderMessage.fromJson(Map<String, dynamic> json) =>
+      ResourceReaderMessage(
+        scheme: json['scheme'] as String,
+        hasHierarchicalUris: json['hasHierarchicalUris'] as bool,
+        isGlobbable: json['isGlobbable'] as bool,
+      );
 
   Map<String, dynamic> propertyMap() {
     final map = toJson();
@@ -156,10 +158,14 @@ enum MessageType {
       ListResourcesResponse() => MessageType.listResourcesResponse,
       ListModulesRequest() => MessageType.listModulesRequest,
       ListModulesResponse() => MessageType.listModulesResponse,
-      InitializeModuleReaderRequest() => MessageType.initializeModuleReaderRequest,
-      InitializeModuleReaderResponse() => MessageType.initializeModuleReaderResponse,
-      InitializeResourceReaderRequest() => MessageType.initializeResourceReaderRequest,
-      InitializeResourceReaderResponse() => MessageType.initializeResourceReaderResponse,
+      InitializeModuleReaderRequest() =>
+        MessageType.initializeModuleReaderRequest,
+      InitializeModuleReaderResponse() =>
+        MessageType.initializeModuleReaderResponse,
+      InitializeResourceReaderRequest() =>
+        MessageType.initializeResourceReaderRequest,
+      InitializeResourceReaderResponse() =>
+        MessageType.initializeResourceReaderResponse,
       CloseExternalProcess() => MessageType.closeExternalProcess,
     };
   }
@@ -217,10 +223,18 @@ class CreateEvaluatorRequest implements ClientRequestMessage {
 
   @override
   Map<String, dynamic> propertyMap() {
-    final moduleReaders = clientModuleReaders?.map((r) => r.propertyMap()).toList();
-    final resourceReaders = clientResourceReaders?.map((r) => r.propertyMap()).toList();
-    final externalMr = externalModuleReaders?.map((k, v) => MapEntry(k, v.propertiesMap()));
-    final externalRr = externalResourceReaders?.map((k, v) => MapEntry(k, v.propertiesMap()));
+    final moduleReaders = clientModuleReaders
+        ?.map((r) => r.propertyMap())
+        .toList();
+    final resourceReaders = clientResourceReaders
+        ?.map((r) => r.propertyMap())
+        .toList();
+    final externalMr = externalModuleReaders?.map(
+      (k, v) => MapEntry(k, v.propertiesMap()),
+    );
+    final externalRr = externalResourceReaders?.map(
+      (k, v) => MapEntry(k, v.propertiesMap()),
+    );
     return <String, dynamic>{}
         .addIfNotNull('requestId', requestId)
         .addIfNotNull('allowedModules', allowedModules)
@@ -258,7 +272,13 @@ class ProjectOrDependency extends Equatable {
   });
 
   @override
-  List<Object?> get props => [packageUri, type, projectFileUri, checksums, dependencies];
+  List<Object?> get props => [
+    packageUri,
+    type,
+    projectFileUri,
+    checksums,
+    dependencies,
+  ];
 
   Map<String, dynamic> toJson() => {
     'packageUri': packageUri,
@@ -268,17 +288,20 @@ class ProjectOrDependency extends Equatable {
     'dependencies': dependencies?.map((k, v) => MapEntry(k, v.toJson())),
   };
 
-  factory ProjectOrDependency.fromJson(Map<String, dynamic> json) => ProjectOrDependency(
-    packageUri: json['packageUri'] as String?,
-    type: json['type'] as String,
-    projectFileUri: json['projectFileUri'] as String?,
-    checksums: json['checksums'] != null ? Checksums.fromJson(json['checksums']) : null,
-    dependencies: json['dependencies'] != null
-        ? (json['dependencies'] as Map<String, dynamic>).map(
-            (k, v) => MapEntry(k, ProjectOrDependency.fromJson(v)),
-          )
-        : null,
-  );
+  factory ProjectOrDependency.fromJson(Map<String, dynamic> json) =>
+      ProjectOrDependency(
+        packageUri: json['packageUri'] as String?,
+        type: json['type'] as String,
+        projectFileUri: json['projectFileUri'] as String?,
+        checksums: json['checksums'] != null
+            ? Checksums.fromJson(json['checksums'])
+            : null,
+        dependencies: json['dependencies'] != null
+            ? (json['dependencies'] as Map<String, dynamic>).map(
+                (k, v) => MapEntry(k, ProjectOrDependency.fromJson(v)),
+              )
+            : null,
+      );
 
   Map<String, dynamic> propertiesMap() {
     final map = toJson();
@@ -320,7 +343,11 @@ class CreateEvaluatorResponse implements ServerResponseMessage {
   final int? evaluatorId;
   final String? error;
 
-  CreateEvaluatorResponse({required this.requestId, this.evaluatorId, this.error});
+  CreateEvaluatorResponse({
+    required this.requestId,
+    this.evaluatorId,
+    this.error,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -337,7 +364,11 @@ class ReadResourceRequest implements ServerRequestMessage {
   final int evaluatorId;
   final Uri uri;
 
-  ReadResourceRequest({required this.requestId, required this.evaluatorId, required this.uri});
+  ReadResourceRequest({
+    required this.requestId,
+    required this.evaluatorId,
+    required this.uri,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -378,7 +409,11 @@ class ReadModuleRequest implements ServerRequestMessage {
   final int evaluatorId;
   final Uri uri;
 
-  ReadModuleRequest({required this.requestId, required this.evaluatorId, required this.uri});
+  ReadModuleRequest({
+    required this.requestId,
+    required this.evaluatorId,
+    required this.uri,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -419,7 +454,11 @@ class ListResourcesRequest implements ServerRequestMessage {
   int evaluatorId;
   Uri uri;
 
-  ListResourcesRequest({required this.requestId, required this.evaluatorId, required this.uri});
+  ListResourcesRequest({
+    required this.requestId,
+    required this.evaluatorId,
+    required this.uri,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -449,7 +488,10 @@ class ListResourcesResponse implements ClientResponseMessage {
     return <String, dynamic>{}
         .addIfNotNull('requestId', requestId)
         .addIfNotNull('evaluatorId', evaluatorId)
-        .addIfNotNull('pathElements', pathElements?.map((e) => e.propertyMap()).toList())
+        .addIfNotNull(
+          'pathElements',
+          pathElements?.map((e) => e.propertyMap()).toList(),
+        )
         .addIfNotNull('error', error);
   }
 }
@@ -463,7 +505,10 @@ class PathElementMessage {
   Map<String, dynamic> toJson() => {'name': name, 'isDirectory': isDirectory};
 
   factory PathElementMessage.fromJson(Map<String, dynamic> json) =>
-      PathElementMessage(name: json['name'] as String, isDirectory: json['isDirectory'] as bool);
+      PathElementMessage(
+        name: json['name'] as String,
+        isDirectory: json['isDirectory'] as bool,
+      );
 
   Map<String, dynamic> propertyMap() {
     final map = toJson();
@@ -479,7 +524,11 @@ class ListModulesRequest implements ServerRequestMessage {
   int evaluatorId;
   Uri uri;
 
-  ListModulesRequest({required this.requestId, required this.evaluatorId, required this.uri});
+  ListModulesRequest({
+    required this.requestId,
+    required this.evaluatorId,
+    required this.uri,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -509,7 +558,10 @@ class ListModulesResponse implements ClientResponseMessage {
     return <String, dynamic>{}
         .addIfNotNull('requestId', requestId)
         .addIfNotNull('evaluatorId', evaluatorId)
-        .addIfNotNull('pathElements', pathElements?.map((e) => e.propertyMap()).toList())
+        .addIfNotNull(
+          'pathElements',
+          pathElements?.map((e) => e.propertyMap()).toList(),
+        )
         .addIfNotNull('error', error);
   }
 }
@@ -562,7 +614,12 @@ class EvaluateResponse implements ServerResponseMessage {
   final Uint8List? result;
   final String? error;
 
-  EvaluateResponse({required this.requestId, required this.evaluatorId, this.result, this.error});
+  EvaluateResponse({
+    required this.requestId,
+    required this.evaluatorId,
+    this.result,
+    this.error,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -615,7 +672,10 @@ class InitializeModuleReaderRequest implements ServerRequestMessage {
   int requestId;
   final String scheme;
 
-  InitializeModuleReaderRequest({required this.requestId, required this.scheme});
+  InitializeModuleReaderRequest({
+    required this.requestId,
+    required this.scheme,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -641,7 +701,10 @@ class InitializeResourceReaderRequest implements ServerRequestMessage {
   int requestId;
   final String scheme;
 
-  InitializeResourceReaderRequest({required this.requestId, required this.scheme});
+  InitializeResourceReaderRequest({
+    required this.requestId,
+    required this.scheme,
+  });
 
   @override
   Map<String, dynamic> propertyMap() {
@@ -679,7 +742,9 @@ class ExternalReader extends Equatable {
   factory ExternalReader.fromJson(Map<String, dynamic> json) {
     return ExternalReader(
       executable: json['executable'] as String,
-      arguments: json['arguments'] != null ? List<String>.from(json['arguments']) : null,
+      arguments: json['arguments'] != null
+          ? List<String>.from(json['arguments'])
+          : null,
     );
   }
 

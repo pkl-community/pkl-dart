@@ -54,16 +54,25 @@ void main() {
         final bytes = writer.takeBytes();
         verificationDecoder.add(bytes);
 
-        final decodedArray = verificationDecoder.decode<MessagePackArray>().value;
+        final decodedArray = verificationDecoder
+            .decode<MessagePackArray>()
+            .value;
         expect(decodedArray.length, 2);
         expect(decodedArray[0], MessageType.createEvaluatorRequest.value);
 
         final body = decodedArray[1] as Map;
         expect(body['requestId'], 101);
         expect(body['allowedModules'], ['pkl:', 'file:']);
-        expect(body['allowedResources'], ['https:'], reason: 'Allowed resources should be present');
+        expect(body['allowedResources'], [
+          'https:',
+        ], reason: 'Allowed resources should be present');
         expect(body['clientModuleReaders'], [
-          {'scheme': 'custom', 'hasHierarchicalUris': true, 'isLocal': false, 'isGlobbable': true},
+          {
+            'scheme': 'custom',
+            'hasHierarchicalUris': true,
+            'isLocal': false,
+            'isGlobbable': true,
+          },
         ]);
         expect(body['properties'], {'foo': 'bar'});
         expect(body['timeoutInSeconds'], 30);
@@ -77,34 +86,45 @@ void main() {
         final bytes = writer.takeBytes();
         verificationDecoder.add(bytes);
 
-        final decodedArray = verificationDecoder.decode<MessagePackArray>().value;
+        final decodedArray = verificationDecoder
+            .decode<MessagePackArray>()
+            .value;
         final body = decodedArray[1] as Map;
 
-        expect(body.length, 1, reason: 'Only non-null fields should be serialized');
+        expect(
+          body.length,
+          1,
+          reason: 'Only non-null fields should be serialized',
+        );
         expect(body['requestId'], 102);
         expect(body.containsKey('allowedModules'), isFalse);
         expect(body.containsKey('properties'), isFalse);
         expect(body.containsKey('timeoutInSeconds'), isFalse);
       });
 
-      test('serializes a one-way CloseEvaluatorRequest without a requestId', () {
-        final request = CloseEvaluatorRequest(evaluatorId: 5);
+      test(
+        'serializes a one-way CloseEvaluatorRequest without a requestId',
+        () {
+          final request = CloseEvaluatorRequest(evaluatorId: 5);
 
-        serializer.serialize(request);
-        final bytes = writer.takeBytes();
-        verificationDecoder.add(bytes);
+          serializer.serialize(request);
+          final bytes = writer.takeBytes();
+          verificationDecoder.add(bytes);
 
-        final decodedArray = verificationDecoder.decode<MessagePackArray>().value;
-        expect(decodedArray[0], MessageType.closeEvaluator.value);
+          final decodedArray = verificationDecoder
+              .decode<MessagePackArray>()
+              .value;
+          expect(decodedArray[0], MessageType.closeEvaluator.value);
 
-        final body = decodedArray[1] as Map;
-        expect(body['evaluatorId'], 5);
-        expect(
-          body.containsKey('requestId'),
-          isFalse,
-          reason: 'One-way messages should not have a requestId',
-        );
-      });
+          final body = decodedArray[1] as Map;
+          expect(body['evaluatorId'], 5);
+          expect(
+            body.containsKey('requestId'),
+            isFalse,
+            reason: 'One-way messages should not have a requestId',
+          );
+        },
+      );
 
       test('serializes an EvaluateRequest with module text', () {
         final request = EvaluateRequest(
@@ -118,7 +138,9 @@ void main() {
         final bytes = writer.takeBytes();
         verificationDecoder.add(bytes);
 
-        final decodedArray = verificationDecoder.decode<MessagePackArray>().value;
+        final decodedArray = verificationDecoder
+            .decode<MessagePackArray>()
+            .value;
         final body = decodedArray[1] as Map;
         expect(body['requestId'], 103);
         expect(body['evaluatorId'], 1);
@@ -213,7 +235,11 @@ void main() {
       test('deserializes a ReadModuleRequest', () {
         final message = [
           MessageType.readModuleRequest.value,
-          {'requestId': 204, 'evaluatorId': 7, 'uri': 'custom-scheme:/path/to/module'},
+          {
+            'requestId': 204,
+            'evaluatorId': 7,
+            'uri': 'custom-scheme:/path/to/module',
+          },
         ];
         encodeAndPrepareForDecode(message);
 
@@ -245,12 +271,15 @@ void main() {
         );
       });
 
-      test('throws PklBugError for malformed message (not enough elements)', () {
-        final message = [MessageType.createEvaluatorResponse.value];
-        encodeAndPrepareForDecode(message);
+      test(
+        'throws PklBugError for malformed message (not enough elements)',
+        () {
+          final message = [MessageType.createEvaluatorResponse.value];
+          encodeAndPrepareForDecode(message);
 
-        expect(() => serializer.deserialize(), throwsA(isA<PklBugError>()));
-      });
+          expect(() => serializer.deserialize(), throwsA(isA<PklBugError>()));
+        },
+      );
     });
   });
 }

@@ -50,7 +50,9 @@ class PklEncoder {
             PklTypeCodes.object,
             value.fqcn,
             value.moduleUri,
-            value.members.map((m) => _convertPklToMessagePackEncodable(m)).toList(),
+            value.members
+                .map((m) => _convertPklToMessagePackEncodable(m))
+                .toList(),
           ];
         case PklMap():
           final normalizedMap = value.data.entries.fold({}, (pm, e) {

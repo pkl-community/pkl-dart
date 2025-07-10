@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:test/test.dart';
+
 import 'package:pkl_dart/pkl_dart.dart';
 import 'package:pkl_dart/src/project.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Project Evaluation', () {
@@ -26,7 +27,9 @@ void main() {
       await Evaluator.run((evaluator) async {
         // Evaluate the PklProject file itself as a module
         final result =
-            await evaluator.evaluateModule(ModuleSource.uri(Uri.file(pklProjectPath)))
+            await evaluator.evaluateModule(
+                  ModuleSource.uri(Uri.file(pklProjectPath)),
+                )
                 as Map<String, dynamic>;
 
         final project = Project.fromJson(result);
@@ -59,10 +62,13 @@ void main() {
 
 // Helper function to create test fixture files
 Directory _createProjectFixtures(Directory tempDir, String fixtureSetName) {
-  final projectDir = Directory('${tempDir.path}/$fixtureSetName')..createSync(recursive: true);
+  final projectDir = Directory('${tempDir.path}/$fixtureSetName')
+    ..createSync(recursive: true);
   switch (fixtureSetName) {
     case 'project':
-      File('${projectDir.path}/PklProject').writeAsStringSync(_pklProjectFileContent);
+      File(
+        '${projectDir.path}/PklProject',
+      ).writeAsStringSync(_pklProjectFileContent);
       Directory('${projectDir.path}/cache').createSync();
       Directory('${projectDir.path}/modulepath1').createSync();
       Directory('${projectDir.path}/modulepath2').createSync();
@@ -72,7 +78,9 @@ Directory _createProjectFixtures(Directory tempDir, String fixtureSetName) {
       File('${projectDir.path}/test2.pkl').createSync();
       break;
     case 'project_wrong_type':
-      File('${projectDir.path}/PklProject').writeAsStringSync('module com.apple.Foo\n\nfoo = 1');
+      File(
+        '${projectDir.path}/PklProject',
+      ).writeAsStringSync('module com.apple.Foo\n\nfoo = 1');
       break;
     case 'project_cycle':
       final p1Dir = Directory('${projectDir.path}/project1')..createSync();

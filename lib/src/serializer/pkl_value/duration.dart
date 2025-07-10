@@ -15,19 +15,23 @@ class PklDuration extends PklValue implements PklDecodable {
   const PklDuration(this.value, {required this.unit});
 
   /// Creates a Duration with nanoseconds.
-  PklDuration.nanoseconds(num value) : this(value.toDouble(), unit: DurationUnit.ns);
+  PklDuration.nanoseconds(num value)
+    : this(value.toDouble(), unit: DurationUnit.ns);
 
   /// Creates a Duration with microseconds.
-  PklDuration.microseconds(num value) : this(value.toDouble(), unit: DurationUnit.us);
+  PklDuration.microseconds(num value)
+    : this(value.toDouble(), unit: DurationUnit.us);
 
   /// Creates a Duration with milliseconds.
-  PklDuration.milliseconds(num value) : this(value.toDouble(), unit: DurationUnit.ms);
+  PklDuration.milliseconds(num value)
+    : this(value.toDouble(), unit: DurationUnit.ms);
 
   /// Creates a Duration with seconds.
   PklDuration.seconds(num value) : this(value.toDouble(), unit: DurationUnit.s);
 
   /// Creates a Duration with minutes.
-  PklDuration.minutes(num value) : this(value.toDouble(), unit: DurationUnit.min);
+  PklDuration.minutes(num value)
+    : this(value.toDouble(), unit: DurationUnit.min);
 
   /// Creates a Duration with hours.
   PklDuration.hours(num value) : this(value.toDouble(), unit: DurationUnit.h);
@@ -55,12 +59,18 @@ class PklDuration extends PklValue implements PklDecodable {
 
   /// Converts this [PklDuration] to the specified unit.
   PklDuration toUnit(DurationUnit unit) {
-    return PklDuration(value * this.unit.factorForConversion(to: unit), unit: unit);
+    return PklDuration(
+      value * this.unit.factorForConversion(to: unit),
+      unit: unit,
+    );
   }
 
   /// Converts this duration to a Dart [PklDuration].
   Duration toDartDuration() {
-    return Duration(microseconds: (value * unit.factorForConversion(to: DurationUnit.us)).round());
+    return Duration(
+      microseconds: (value * unit.factorForConversion(to: DurationUnit.us))
+          .round(),
+    );
   }
 
   @override
