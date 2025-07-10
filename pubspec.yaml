@@ -1,10 +1,10 @@
 name: pkl_dart
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description: Pkl Bindings for Dart
+version: 0.1.0-wip
+repository: https://github.com/pkl-community/pkl-dart
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.8.0
 
 dependencies:
   collection: ^1.19.1
