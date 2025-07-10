@@ -11,7 +11,7 @@ import 'pkl_data_model.dart';
 
 /// Decodes Pkl binary format (MessagePack) into Dart objects.
 class PklDecoder {
-  final MessagePackCodec _messagePackCodec = MessagePackCodec();
+  final MessagePackCodec _messagePackCodec = const MessagePackCodec();
 
   /// Decodes Pkl binary format bytes into a Dart object.
   ///
@@ -39,16 +39,16 @@ class PklDecoder {
   dynamic _convertMessagePackValueToPkl(MessagePackValue mpValue) {
     if (mpValue is MessagePackArray) {
       if (mpValue.elements.isEmpty) {
-        throw FormatException('Pkl array cannot be empty (missing type code).');
+        throw const FormatException('Pkl array cannot be empty (missing type code).');
       }
       final typeCode = (mpValue.elements[0] as MessagePackInt).value;
 
       /// Check for [PlkClass] and [TypeAlias]
       if (typeCode == PklTypeCodes.classType) {
-        return PklClass();
+        return const PklClass();
       }
       if (typeCode == PklTypeCodes.typeAlias) {
-        return PklTypeAlias();
+        return const PklTypeAlias();
       }
       if (mpValue.elements.length < 2) {
         throw FormatException(
@@ -163,7 +163,7 @@ class PklDecoder {
   dynamic _convert(MessagePackValue mpValue) {
     if (mpValue is MessagePackArray) {
       if (mpValue.elements.isEmpty) {
-        throw FormatException('Pkl array cannot be empty (missing type code).');
+        throw const FormatException('Pkl array cannot be empty (missing type code).');
       }
       final typeCode = (mpValue.elements[0] as MessagePackInt).value;
       final elements = mpValue.elements.sublist(1);

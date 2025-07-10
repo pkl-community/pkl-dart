@@ -6,7 +6,6 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 
-import 'package:pkl_dart/src/message_pack/message_pack.dart';
 import 'package:pkl_dart/src/message_pack/message_pack_value.dart';
 import 'package:pkl_dart/src/message_pack/msgpack.dart';
 import 'package:test/test.dart';

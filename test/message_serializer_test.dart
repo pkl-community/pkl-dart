@@ -152,9 +152,9 @@ void main() {
 
     group('Deserialization (Server Messages)', () {
       MessagePackValue encodeAndPrepareForDecode(List<dynamic> message) {
-        final bytes = MessagePackCodec().encode(message);
+        final bytes = const MessagePackCodec().encode(message);
         serializer.decoder.add(bytes);
-        return MessagePackCodec().decode(bytes);
+        return const MessagePackCodec().decode(bytes);
       }
 
       test('deserializes a successful CreateEvaluatorResponse', () {
@@ -191,7 +191,7 @@ void main() {
 
       test('deserializes a successful EvaluateResponse', () {
         final pklResultBytes = PklEncoder().encode(
-          PklObject(fqcn: 'foo', moduleUri: 'bar', members: []),
+          const PklObject(fqcn: 'foo', moduleUri: 'bar', members: []),
         );
         final message = [
           MessageType.evaluateResponse.value,

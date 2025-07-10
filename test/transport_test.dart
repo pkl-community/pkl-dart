@@ -135,7 +135,7 @@ void main() {
     test('should receive and decode a single complete message', () async {
       // Arrange
       final response = CreateEvaluatorResponse(requestId: 1, evaluatorId: 10);
-      final bytes = MessagePackCodec().encode([
+      final bytes = const MessagePackCodec().encode([
         MessageType.createEvaluatorResponse.value,
         response.propertyMap(),
       ]);
@@ -162,11 +162,11 @@ void main() {
           frameUri: 'file:///test.pkl',
         );
 
-        final bytes1 = MessagePackCodec().encode([
+        final bytes1 = const MessagePackCodec().encode([
           MessageType.createEvaluatorResponse.value,
           response1.propertyMap(),
         ]);
-        final bytes2 = MessagePackCodec().encode([
+        final bytes2 = const MessagePackCodec().encode([
           MessageType.logMessage.value,
           response2.propertyMap(),
         ]);
@@ -187,7 +187,7 @@ void main() {
     test('should buffer and decode a fragmented message', () async {
       // Arrange
       final response = CreateEvaluatorResponse(requestId: 1, evaluatorId: 10);
-      final bytes = MessagePackCodec().encode([
+      final bytes = const MessagePackCodec().encode([
         MessageType.createEvaluatorResponse.value,
         response.propertyMap(),
       ]);
@@ -212,7 +212,7 @@ void main() {
       () async {
         // Arrange
         // Encodes `[0x21]`, which is an array of 1, not 2.
-        final malformedBytes = MessagePackCodec().encode([
+        final malformedBytes = const MessagePackCodec().encode([
           MessageType.createEvaluatorResponse.value,
         ]);
 
@@ -238,7 +238,7 @@ void main() {
     test('close() should stop listening to the stream', () async {
       // Arrange
       final response = CreateEvaluatorResponse(requestId: 1, evaluatorId: 10);
-      final bytes = MessagePackCodec().encode([
+      final bytes = const MessagePackCodec().encode([
         MessageType.createEvaluatorResponse.value,
         response.propertyMap(),
       ]);

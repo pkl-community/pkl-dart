@@ -76,7 +76,7 @@ class Project extends Equatable implements DependencyDeclaredInProjectFile {
           ? PklEvaluatorSettings.fromJson(
               map['evaluatorSettings'] as Map<String, dynamic>,
             )
-          : PklEvaluatorSettings(),
+          : const PklEvaluatorSettings(),
       projectFileUri: hasProjectUri ? map['projectFileUri'] as String : '',
       tests: hasTests ? List<String>.from(map['tests']) : [],
       dependencies: dependencies,

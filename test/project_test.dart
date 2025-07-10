@@ -34,13 +34,13 @@ void main() {
 
         final project = Project.fromJson(result);
 
-        final expectedPackage = Package(
+        const expectedPackage = Package(
           name: 'hawk',
           baseUri: 'package://example.com/hawk',
           version: '0.5.0',
           packageZipUrl: 'https://example.com/hawk/0.5.0/hawk-0.5.0.zip',
           description: 'Some project about hawks',
-          authors: const ['Birdy Bird <birdy@bird.com>'],
+          authors: ['Birdy Bird <birdy@bird.com>'],
           website: 'https://example.com/my/website',
           documentation: 'https://example.com/my/docs',
           sourceCode: 'https://example.com/my/repo',
@@ -48,8 +48,8 @@ void main() {
           license: 'MIT',
           licenseText: '# Some License text\n\nThis is my license text',
           issueTracker: 'https://example.com/my/issues',
-          apiTests: const ['apiTest1.pkl', 'apiTest2.pkl'],
-          exclude: const ['PklProject', 'PklProject.deps.json', '.**', '*.exe'],
+          apiTests: ['apiTest1.pkl', 'apiTest2.pkl'],
+          exclude: ['PklProject', 'PklProject.deps.json', '.**', '*.exe'],
           uri: 'package://example.com/hawk@0.5.0',
         );
         expect(project.package, equals(expectedPackage));

@@ -59,7 +59,7 @@ class EvaluatorManager {
     try {
       await Isolate.spawn(
         evaluatorManagerIsolateEntrypoint,
-        (initPort.sendPort),
+        initPort.sendPort,
       );
     } on Object {
       initPort.close();
