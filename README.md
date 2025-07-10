@@ -42,8 +42,8 @@ import 'package:pkl_dart/pkl_dart.dart';
 
 ## Usage
 
-The primary entry point to the library is the `Evaluator`. It's recommended to use the `withEvaluatorPreconfigured`
-helper, which automatically manages the lifecycle of the underlying Pkl process.
+The primary entry point to the library is the `Evaluator` class. For simple, one-off evaluations, use the static `run`
+methods, which automatically manage the lifecycle of the underlying Pkl process.
 
 ### Basic Evaluation
 
@@ -53,7 +53,7 @@ You can evaluate a Pkl module and get back standard Dart types like `String`, `i
 import 'package:pkl_dart/pkl_dart.dart';
 
 Future<void> main() async {
-  await withEvaluatorPreconfigured((evaluator) async {
+  await Evaluator.run((evaluator) async {
     final module = ModuleSource.text('''
       name = "Pkl-Dart"
       version = 1
@@ -148,7 +148,7 @@ import 'package:pkl_dart/pkl_dart.dart';
 // Import your ServerConfig class...
 
 Future<void> main() async {
-  await withEvaluatorPreconfigured((evaluator) async {
+  await Evaluator.run((evaluator) async {
     final config = await evaluator.evaluateModuleAs<ServerConfig>(
       source: ModuleSource.uri(Uri.parse('config.pkl')),
       fromPkl: ServerConfig.fromPkl,
@@ -185,7 +185,7 @@ output {
 
 ```dart
 Future<void> main() async {
-  await withEvaluatorPreconfigured((evaluator) async {
+  await Evaluator.run((evaluator) async {
     final source = ModuleSource.uri(Uri.parse('template.pkl'));
 
     // Evaluate the main text output
@@ -204,6 +204,7 @@ Future<void> main() async {
 The library throws specific exceptions for different failure modes:
 
 - **PklError**: A general error during Pkl evaluation (e.g., syntax error, validation failure).
+- PklBugError: An unexpected error indicating a potential bug in this library or the Pkl process communication.
 - **PklDecodingException**: An error during deserialization into a Dart object (e.g., missing key, type mismatch).
 
 ## Upcoming Features
