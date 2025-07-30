@@ -8,11 +8,7 @@ class Generator {
 
   final String workingDirectory;
 
-  Generator({
-    required this.settings,
-    this.verbose = false,
-    required this.workingDirectory,
-  });
+  Generator({required this.settings, this.verbose = false, required this.workingDirectory});
 
   Future runDry() async {
     //

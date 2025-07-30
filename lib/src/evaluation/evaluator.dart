@@ -18,7 +18,7 @@ import 'manager_messages.dart';
 import 'package:meta/meta.dart';
 
 /// A type alias for an action to be performed with a temporary evaluator.
-typedef EvaluationAction<T> = Future<T> Function(Evaluator);
+typedef EvaluationAction<T> = FutureOr<T> Function(Evaluator);
 
 /// Helper that performs an [action] with a manager and ensures
 /// the manager is closed afterward.

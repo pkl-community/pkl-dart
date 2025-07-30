@@ -104,6 +104,7 @@ class IOSinkLogger extends Logger with EquatableMixin {
 }
 
 /// Predefined logger instances for common use cases.
+// TODO: We can just have these as static properties on [Logger]
 class Loggers {
   /// A logger that writes everything to stdout using Dart's logging package.
   static Logger get standardOutput {
