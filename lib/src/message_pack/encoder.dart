@@ -221,29 +221,19 @@ void _encodeMap(Map value, BytesBuilder builder) {
 void _encodeExtension(MessagePackExt ext, BytesBuilder builder) {
   final length = ext.data.length;
 
-  builder.addByte(switch (length) {
-    1 => MessagePackFormat.fixext1,
-    2 => MessagePackFormat.fixext2,
-    4 => MessagePackFormat.fixext4,
-    8 => MessagePackFormat.fixext8,
-    16 => MessagePackFormat.fixext16,
-    <= 0xFF => MessagePackFormat.ext8,
-    <= 0xFFFF => MessagePackFormat.ext16,
-    <= 0xFFFFFFFF => MessagePackFormat.ext32,
+  builder.add(switch (length) {
+    1 => [MessagePackFormat.fixext1],
+    2 => [MessagePackFormat.fixext2],
+    4 => [MessagePackFormat.fixext4],
+    8 => [MessagePackFormat.fixext8],
+    16 => [MessagePackFormat.fixext16],
+    <= 0xFF => [MessagePackFormat.ext8, length],
+    <= 0xFFFF => [MessagePackFormat.ext16, ..._uint16ToBytes(length)],
+    <= 0xFFFFFFFF => [MessagePackFormat.ext32, ..._uint32ToBytes(length)],
     _ => throw ArgumentError(
       'Extension data length exceeds MessagePack limit (2^32-1 bytes): $length',
     ),
   });
-
-  if (![1, 2, 4, 8, 16].contains(length)) {
-    if (length <= 0xFF) {
-      builder.addByte(length);
-    } else if (length <= 0xFFFF) {
-      builder.add(_uint16ToBytes(length));
-    } else if (length <= 0xFFFFFFFF) {
-      builder.add(_uint32ToBytes(length));
-    }
-  }
 
   builder.addByte(ext.type);
   builder.add(ext.data);
