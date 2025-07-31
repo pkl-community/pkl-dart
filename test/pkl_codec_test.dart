@@ -33,16 +33,31 @@ void main() {
     group('PklEncoder', () {
       // Test encoding of primitive types (should pass through to MessagePackCodec)
       test('should encode primitive types directly', () {
-        expect(encoder.encode(null), equals(const MessagePackCodec().encode(null)));
-        expect(encoder.encode(true), equals(const MessagePackCodec().encode(true)));
-        expect(encoder.encode(123), equals(const MessagePackCodec().encode(123)));
-        expect(encoder.encode(3.14), equals(const MessagePackCodec().encode(3.14)));
+        expect(
+          encoder.encode(null),
+          equals(const MessagePackCodec().encode(null)),
+        );
+        expect(
+          encoder.encode(true),
+          equals(const MessagePackCodec().encode(true)),
+        );
+        expect(
+          encoder.encode(123),
+          equals(const MessagePackCodec().encode(123)),
+        );
+        expect(
+          encoder.encode(3.14),
+          equals(const MessagePackCodec().encode(3.14)),
+        );
         expect(
           encoder.encode('hello'),
           equals(const MessagePackCodec().encode('hello')),
         );
         final bytes = Uint8List.fromList([1, 2, 3]);
-        expect(encoder.encode(bytes), equals(const MessagePackCodec().encode(bytes)));
+        expect(
+          encoder.encode(bytes),
+          equals(const MessagePackCodec().encode(bytes)),
+        );
       });
 
       test('should encode PklTyped', () {
@@ -200,9 +215,18 @@ void main() {
     group('PklDecoder', () {
       // Test decoding of primitive types (should pass through from MessagePackCodec)
       test('should decode primitive types directly', () {
-        expect(decoder.decodePkl(const MessagePackCodec().encode(null)), isNull);
-        expect(decoder.decodePkl(const MessagePackCodec().encode(true)), isTrue);
-        expect(decoder.decodePkl(const MessagePackCodec().encode(123)), equals(123));
+        expect(
+          decoder.decodePkl(const MessagePackCodec().encode(null)),
+          isNull,
+        );
+        expect(
+          decoder.decodePkl(const MessagePackCodec().encode(true)),
+          isTrue,
+        );
+        expect(
+          decoder.decodePkl(const MessagePackCodec().encode(123)),
+          equals(123),
+        );
         expect(
           decoder.decodePkl(const MessagePackCodec().encode(3.14)),
           equals(3.14),
@@ -234,8 +258,14 @@ void main() {
         expect(typed.fqcn, 'org.pkl.example.MyClass');
         expect(typed.moduleUri, 'file:///path/to/module.pkl');
         expect(typed.members, hasLength(2));
-        expect(typed.members[0], equals(const PklProperty(key: 'prop1', value: 123)));
-        expect(typed.members[1], equals(const PklEntry(key: 'key', value: 'value')));
+        expect(
+          typed.members[0],
+          equals(const PklProperty(key: 'prop1', value: 123)),
+        );
+        expect(
+          typed.members[1],
+          equals(const PklEntry(key: 'key', value: 'value')),
+        );
       });
 
       test('should decode PklMap', () {
@@ -337,7 +367,10 @@ void main() {
           'someValue',
         ]);
         final decoded = decoder.decodePkl(rawMp);
-        expect(decoded, equals(const PklProperty(key: 'myProp', value: 'someValue')));
+        expect(
+          decoded,
+          equals(const PklProperty(key: 'myProp', value: 'someValue')),
+        );
       });
 
       test('should decode PklEntry (top-level)', () {
@@ -352,7 +385,10 @@ void main() {
           'firstElement',
         ]);
         final decoded = decoder.decodePkl(rawMp);
-        expect(decoded, equals(const PklElement(index: 0, value: 'firstElement')));
+        expect(
+          decoded,
+          equals(const PklElement(index: 0, value: 'firstElement')),
+        );
       });
 
       test('should throw FormatException for empty Pkl array', () {

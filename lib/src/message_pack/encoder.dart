@@ -235,12 +235,14 @@ void _encodeExtension(MessagePackExt ext, BytesBuilder builder) {
     ),
   });
 
-  if (length <= 0xFF) {
-    builder.addByte(length);
-  } else if (length <= 0xFFFF) {
-    builder.add(_uint16ToBytes(length));
-  } else if (length <= 0xFFFFFFFF) {
-    builder.add(_uint32ToBytes(length));
+  if (![1, 2, 4, 8, 16].contains(length)) {
+    if (length <= 0xFF) {
+      builder.addByte(length);
+    } else if (length <= 0xFFFF) {
+      builder.add(_uint16ToBytes(length));
+    } else if (length <= 0xFFFFFFFF) {
+      builder.add(_uint32ToBytes(length));
+    }
   }
 
   builder.addByte(ext.type);

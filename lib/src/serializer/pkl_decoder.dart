@@ -39,7 +39,9 @@ class PklDecoder {
   dynamic _convertMessagePackValueToPkl(MessagePackValue mpValue) {
     if (mpValue is MessagePackArray) {
       if (mpValue.elements.isEmpty) {
-        throw const FormatException('Pkl array cannot be empty (missing type code).');
+        throw const FormatException(
+          'Pkl array cannot be empty (missing type code).',
+        );
       }
       final typeCode = (mpValue.elements[0] as MessagePackInt).value;
 
@@ -163,7 +165,9 @@ class PklDecoder {
   dynamic _convert(MessagePackValue mpValue) {
     if (mpValue is MessagePackArray) {
       if (mpValue.elements.isEmpty) {
-        throw const FormatException('Pkl array cannot be empty (missing type code).');
+        throw const FormatException(
+          'Pkl array cannot be empty (missing type code).',
+        );
       }
       final typeCode = (mpValue.elements[0] as MessagePackInt).value;
       final elements = mpValue.elements.sublist(1);
