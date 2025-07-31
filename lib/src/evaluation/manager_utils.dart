@@ -3,9 +3,11 @@
 // LICENSE file in the root directory of this source tree.
 
 import 'dart:io';
+
 import 'package:logging/logging.dart';
-import 'package:pkl_dart/src/evaluation/pkl_error.dart';
 import 'package:pub_semver/pub_semver.dart';
+
+import 'pkl_error.dart';
 
 // Platform-specific constants
 final String _pklExecName = Platform.isWindows ? 'pkl.exe' : 'pkl';
@@ -33,17 +35,24 @@ String? getEnv(String key) {
 /// This uses the `where` command on Windows and `which` on macOS/Linux.
 Future<String?> findOnPath(String command) async {
   try {
-    final result = await Process.run(Platform.isWindows ? 'where' : 'which', [command]);
+    final result = await Process.run(Platform.isWindows ? 'where' : 'which', [
+      command,
+    ]);
 
     if (result.exitCode == 0) {
       // `where` on Windows can return multiple paths on separate lines.
       // `which` on Unix-like systems typically returns a single path.
       // We take the first valid line from stdout.
-      return (result.stdout as String).split(Platform.lineTerminator).first.trim();
+      return (result.stdout as String)
+          .split(Platform.lineTerminator)
+          .first
+          .trim();
     }
   } catch (e) {
     // This can happen if 'where' or 'which' are not available, though highly unlikely.
-    log('Could not execute "where" or "which" to find command: $command. Error: $e');
+    log(
+      'Could not execute "where" or "which" to find command: $command. Error: $e',
+    );
   }
 
   return null;
@@ -72,7 +81,10 @@ Future<List<String>> getPklCommand() async {
 /// Gets the semantic version as a String of the Pkl interpreter being used.
 Future<String> getPklVersion() async {
   final pklCommand = await getPklCommand();
-  final result = await Process.run(pklCommand[0], pklCommand.skip(1).toList()..add('--version'));
+  final result = await Process.run(
+    pklCommand[0],
+    pklCommand.skip(1).toList()..add('--version'),
+  );
 
   if (result.exitCode != 0) {
     throw PklError('Failed to get Pkl version: ${result.stderr}');

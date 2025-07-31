@@ -87,8 +87,13 @@ void main() {
     Uint8List createSerializedMessage(Message message) {
       final writer = DefaultMessagePackWriter();
       final encoder = MessagePackEncoder(writer);
-      final serializer = MessageSerializer(encoder: encoder, decoder: MessagePackDecoder());
-      serializer.serialize(message as ClientMessage); // Cast for helper simplicity
+      final serializer = MessageSerializer(
+        encoder: encoder,
+        decoder: MessagePackDecoder(),
+      );
+      serializer.serialize(
+        message as ClientMessage,
+      ); // Cast for helper simplicity
       return writer.takeBytes();
     }
 
@@ -97,7 +102,10 @@ void main() {
       writerSink = _MockSink();
       // Use the ServerMessageTransport implementation of BaseMessageTransport
       // but with our mock streams. The `_process` will be null.
-      transport = ServerMessageTransport.withoutProcess(readerController.stream, writerSink);
+      transport = ServerMessageTransport.withoutProcess(
+        readerController.stream,
+        writerSink,
+      );
     });
 
     tearDown(() async {
@@ -127,7 +135,7 @@ void main() {
     test('should receive and decode a single complete message', () async {
       // Arrange
       final response = CreateEvaluatorResponse(requestId: 1, evaluatorId: 10);
-      final bytes = MessagePackCodec().encode([
+      final bytes = const MessagePackCodec().encode([
         MessageType.createEvaluatorResponse.value,
         response.propertyMap(),
       ]);
@@ -139,38 +147,47 @@ void main() {
       readerController.add(bytes);
     });
 
-    test('should receive and decode multiple messages from a single chunk', () async {
-      // Arrange
-      final response1 = CreateEvaluatorResponse(requestId: 1, evaluatorId: 10);
-      final response2 = LogMessage(
-        evaluatorId: 10,
-        level: LogLevel.warn,
-        message: 'Warning!',
-        frameUri: 'file:///test.pkl',
-      );
+    test(
+      'should receive and decode multiple messages from a single chunk',
+      () async {
+        // Arrange
+        final response1 = CreateEvaluatorResponse(
+          requestId: 1,
+          evaluatorId: 10,
+        );
+        final response2 = LogMessage(
+          evaluatorId: 10,
+          level: LogLevel.warn,
+          message: 'Warning!',
+          frameUri: 'file:///test.pkl',
+        );
 
-      final bytes1 = MessagePackCodec().encode([
-        MessageType.createEvaluatorResponse.value,
-        response1.propertyMap(),
-      ]);
-      final bytes2 = MessagePackCodec().encode([
-        MessageType.logMessage.value,
-        response2.propertyMap(),
-      ]);
+        final bytes1 = const MessagePackCodec().encode([
+          MessageType.createEvaluatorResponse.value,
+          response1.propertyMap(),
+        ]);
+        final bytes2 = const MessagePackCodec().encode([
+          MessageType.logMessage.value,
+          response2.propertyMap(),
+        ]);
 
-      final combinedBytes = Uint8List.fromList([...bytes1, ...bytes2]);
+        final combinedBytes = Uint8List.fromList([...bytes1, ...bytes2]);
 
-      // Assert
-      expect(transport.messages, emitsInOrder([isA<CreateEvaluatorResponse>(), isA<LogMessage>()]));
+        // Assert
+        expect(
+          transport.messages,
+          emitsInOrder([isA<CreateEvaluatorResponse>(), isA<LogMessage>()]),
+        );
 
-      // Act
-      readerController.add(combinedBytes);
-    });
+        // Act
+        readerController.add(combinedBytes);
+      },
+    );
 
     test('should buffer and decode a fragmented message', () async {
       // Arrange
       final response = CreateEvaluatorResponse(requestId: 1, evaluatorId: 10);
-      final bytes = MessagePackCodec().encode([
+      final bytes = const MessagePackCodec().encode([
         MessageType.createEvaluatorResponse.value,
         response.propertyMap(),
       ]);
@@ -190,17 +207,22 @@ void main() {
       readerController.add(part2);
     });
 
-    test('should emit an error for a malformed message (not a 2-element array)', () async {
-      // Arrange
-      // Encodes `[0x21]`, which is an array of 1, not 2.
-      final malformedBytes = MessagePackCodec().encode([MessageType.createEvaluatorResponse.value]);
+    test(
+      'should emit an error for a malformed message (not a 2-element array)',
+      () async {
+        // Arrange
+        // Encodes `[0x21]`, which is an array of 1, not 2.
+        final malformedBytes = const MessagePackCodec().encode([
+          MessageType.createEvaluatorResponse.value,
+        ]);
 
-      // Assert
-      expect(transport.messages, emitsError(isA<PklBugError>()));
+        // Assert
+        expect(transport.messages, emitsError(isA<PklBugError>()));
 
-      // Act
-      readerController.add(malformedBytes);
-    });
+        // Act
+        readerController.add(malformedBytes);
+      },
+    );
 
     test('should propagate an error from the reader stream', () async {
       // Arrange
@@ -216,7 +238,7 @@ void main() {
     test('close() should stop listening to the stream', () async {
       // Arrange
       final response = CreateEvaluatorResponse(requestId: 1, evaluatorId: 10);
-      final bytes = MessagePackCodec().encode([
+      final bytes = const MessagePackCodec().encode([
         MessageType.createEvaluatorResponse.value,
         response.propertyMap(),
       ]);

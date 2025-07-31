@@ -16,9 +16,13 @@ import 'pkl_evaluator_settings.dart';
 import 'transport.dart';
 
 /// The entry point for the background Isolate that runs the EvaluatorManager logic.
-Future<void> evaluatorManagerIsolateEntrypoint(SendPort mainIsolateSendPort) async {
+Future<void> evaluatorManagerIsolateEntrypoint(
+  SendPort mainIsolateSendPort,
+) async {
   final receivePort = ReceivePort();
-  mainIsolateSendPort.send(receivePort.sendPort); // Send back the receive port's SendPort
+  mainIsolateSendPort.send(
+    receivePort.sendPort,
+  ); // Send back the receive port's SendPort
 
   final logic = _EvaluatorManagerLogic(mainIsolateSendPort);
   await logic._init();
@@ -70,7 +74,9 @@ Future<void> evaluatorManagerIsolateEntrypoint(SendPort mainIsolateSendPort) asy
           message: 'Error processing command ${message.runtimeType}: $e',
           frameUri: '',
         );
-        mainIsolateSendPort.send(ErrorResponse(message.commandId, e.toString()));
+        mainIsolateSendPort.send(
+          ErrorResponse(message.commandId, e.toString()),
+        );
       }
     } else if (message is IsolateCallbackResponse) {
       // Handle responses to callbacks initiated by this isolate
@@ -133,11 +139,15 @@ class _EvaluatorManagerLogic {
     final version = Version.parse(await _getVersion());
 
     if (http != null && version < pklVersion0_26) {
-      throw PklError("http options are not supported on Pkl versions lower than 0.26");
+      throw PklError(
+        "http options are not supported on Pkl versions lower than 0.26",
+      );
     }
     if ((externalModuleReaders != null || externalResourceReaders != null) &&
         version < pklVersion0_27) {
-      throw PklError("external reader options are not supported on Pkl versions lower than 0.27");
+      throw PklError(
+        "external reader options are not supported on Pkl versions lower than 0.27",
+      );
     }
 
     final req = CreateEvaluatorRequest(
@@ -192,7 +202,9 @@ class _EvaluatorManagerLogic {
   Future<void> _close() async {
     _isClosed = true;
     for (final evaluatorId in _evaluators.keys) {
-      _tell(CloseEvaluatorRequest(evaluatorId: evaluatorId)); // requestId will be set by transport
+      _tell(
+        CloseEvaluatorRequest(evaluatorId: evaluatorId),
+      ); // requestId will be set by transport
     }
     _transport.close();
   }
@@ -238,7 +250,9 @@ class _EvaluatorManagerLogic {
           _handleLog(message);
         } else {
           log('Unknown message type received: ${message.runtimeType}');
-          throw PklBugError.unknownMessage('Unknown message type received: ${message.runtimeType}');
+          throw PklBugError.unknownMessage(
+            'Unknown message type received: ${message.runtimeType}',
+          );
         }
       }
     } catch (e) {
@@ -264,7 +278,9 @@ class _EvaluatorManagerLogic {
   Future<void> _handleReadModuleRequest(ReadModuleRequest request) async {
     final evaluator = _evaluators[request.evaluatorId];
     if (evaluator == null) {
-      log('Received ReadModuleRequest for unknown evaluator ID: ${request.evaluatorId}');
+      log(
+        'Received ReadModuleRequest for unknown evaluator ID: ${request.evaluatorId}',
+      );
       _tell(
         ReadModuleResponse(
           requestId: request.requestId,
@@ -323,7 +339,9 @@ class _EvaluatorManagerLogic {
   Future<void> _handleReadResourceRequest(ReadResourceRequest request) async {
     final evaluator = _evaluators[request.evaluatorId];
     if (evaluator == null) {
-      log('Received ReadResourceRequest for unknown evaluator ID: ${request.evaluatorId}');
+      log(
+        'Received ReadResourceRequest for unknown evaluator ID: ${request.evaluatorId}',
+      );
       _tell(
         ReadResourceResponse(
           requestId: request.requestId,
@@ -382,7 +400,9 @@ class _EvaluatorManagerLogic {
   Future<void> _handleListModulesRequest(ListModulesRequest request) async {
     final evaluator = _evaluators[request.evaluatorId];
     if (evaluator == null) {
-      log('Received ListModulesRequest for unknown evaluator ID: ${request.evaluatorId}');
+      log(
+        'Received ListModulesRequest for unknown evaluator ID: ${request.evaluatorId}',
+      );
       _tell(
         ListModulesResponse(
           requestId: request.requestId,
@@ -441,7 +461,9 @@ class _EvaluatorManagerLogic {
   Future<void> _handleListResourcesRequest(ListResourcesRequest request) async {
     final evaluator = _evaluators[request.evaluatorId];
     if (evaluator == null) {
-      log('Received ListResourcesRequest for unknown evaluator ID: ${request.evaluatorId}');
+      log(
+        'Received ListResourcesRequest for unknown evaluator ID: ${request.evaluatorId}',
+      );
       _tell(
         ListResourcesResponse(
           requestId: request.requestId,
@@ -500,12 +522,16 @@ class _EvaluatorManagerLogic {
   void _handleLog(LogMessage request) {
     final evaluator = _evaluators[request.evaluatorId];
     if (evaluator == null) {
-      log('Received LogMessage for unknown evaluator ID: ${request.evaluatorId}');
+      log(
+        'Received LogMessage for unknown evaluator ID: ${request.evaluatorId}',
+      );
       return;
     }
 
     if (evaluator.loggerId == null) {
-      log('Log message received for evaluator ${request.evaluatorId} but no logger configured.');
+      log(
+        'Log message received for evaluator ${request.evaluatorId} but no logger configured.',
+      );
       return;
     }
 

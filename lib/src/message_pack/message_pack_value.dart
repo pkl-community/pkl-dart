@@ -5,8 +5,7 @@
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
-import 'package:pkl_dart/src/message_pack/message_pack.dart'
-    show MessagePackDeserializationException;
+import 'message_pack.dart' show MessagePackDeserializationException;
 
 /// A sealed class representing any value that can be decoded from MessagePack.
 ///
@@ -129,7 +128,8 @@ class MessagePackMap extends MessagePackValue {
   const MessagePackMap(this.map);
 
   @override
-  Map<dynamic, dynamic> get value => map.map((k, v) => MapEntry(k.value, v.value));
+  Map<dynamic, dynamic> get value =>
+      map.map((k, v) => MapEntry(k.value, v.value));
 
   @override
   List<Object?> get props => [map];
@@ -238,7 +238,8 @@ class MessagePackTimestamp extends MessagePackExt {
       case 4:
         return 0; // Timestamp 32 has 0 nanoseconds
       case 8:
-        return (buffer.getUint64(0, Endian.big) >> 34).toInt(); // Extract upper 30 bits
+        return (buffer.getUint64(0, Endian.big) >> 34)
+            .toInt(); // Extract upper 30 bits
       case 12:
         return buffer.getUint32(0, Endian.big);
       default:

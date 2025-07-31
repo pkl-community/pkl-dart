@@ -11,7 +11,7 @@ import 'pkl_data_model.dart';
 
 /// Decodes Pkl binary format (MessagePack) into Dart objects.
 class PklDecoder {
-  final MessagePackCodec _messagePackCodec = MessagePackCodec();
+  final MessagePackCodec _messagePackCodec = const MessagePackCodec();
 
   /// Decodes Pkl binary format bytes into a Dart object.
   ///
@@ -39,16 +39,18 @@ class PklDecoder {
   dynamic _convertMessagePackValueToPkl(MessagePackValue mpValue) {
     if (mpValue is MessagePackArray) {
       if (mpValue.elements.isEmpty) {
-        throw FormatException('Pkl array cannot be empty (missing type code).');
+        throw const FormatException(
+          'Pkl array cannot be empty (missing type code).',
+        );
       }
       final typeCode = (mpValue.elements[0] as MessagePackInt).value;
 
       /// Check for [PlkClass] and [TypeAlias]
       if (typeCode == PklTypeCodes.classType) {
-        return PklClass();
+        return const PklClass();
       }
       if (typeCode == PklTypeCodes.typeAlias) {
-        return PklTypeAlias();
+        return const PklTypeAlias();
       }
       if (mpValue.elements.length < 2) {
         throw FormatException(
@@ -65,14 +67,21 @@ class PklDecoder {
           final moduleUri = (elements[1] as MessagePackString).value;
           final membersMp = elements[2] as MessagePackArray;
           final members = membersMp.elements
-              .map((m) => _convertMessagePackValueToPklMember((m as MessagePackArray).elements))
+              .map(
+                (m) => _convertMessagePackValueToPklMember(
+                  (m as MessagePackArray).elements,
+                ),
+              )
               .toList();
           return PklObject(fqcn: fqcn, moduleUri: moduleUri, members: members);
         case PklTypeCodes.map:
         case PklTypeCodes.mapping:
           final mpMap = elements[0] as MessagePackMap;
           final decodedMap = mpMap.map.map(
-            (k, v) => MapEntry(_convertMessagePackValueToPkl(k), _convertMessagePackValueToPkl(v)),
+            (k, v) => MapEntry(
+              _convertMessagePackValueToPkl(k),
+              _convertMessagePackValueToPkl(v),
+            ),
           );
           return typeCode == PklTypeCodes.map
               ? PklMap.fromMap(decodedMap)
@@ -121,11 +130,15 @@ class PklDecoder {
   List<dynamic> _mspArrayToList(List<MessagePackValue> elements) {
     final mpList = elements[0] as MessagePackArray;
 
-    return mpList.elements.map((e) => _convertMessagePackValueToPkl(e)).toList();
+    return mpList.elements
+        .map((e) => _convertMessagePackValueToPkl(e))
+        .toList();
   }
 
   /// Recursively converts a [MessagePackArray] representing a Pkl member into its corresponding Dart object.
-  PklMember _convertMessagePackValueToPklMember(List<MessagePackValue> elements) {
+  PklMember _convertMessagePackValueToPklMember(
+    List<MessagePackValue> elements,
+  ) {
     _checkElementLength(elements, 2);
     final memberTypeCode = (elements[0] as MessagePackInt).value;
     final memberElements = elements.sublist(1);
@@ -152,7 +165,9 @@ class PklDecoder {
   dynamic _convert(MessagePackValue mpValue) {
     if (mpValue is MessagePackArray) {
       if (mpValue.elements.isEmpty) {
-        throw FormatException('Pkl array cannot be empty (missing type code).');
+        throw const FormatException(
+          'Pkl array cannot be empty (missing type code).',
+        );
       }
       final typeCode = (mpValue.elements[0] as MessagePackInt).value;
       final elements = mpValue.elements.sublist(1);
@@ -258,7 +273,11 @@ class PklDecoder {
   }
 
   /// Helper function to throw an exception when element length is less than [boundary]
-  void _checkElementLength(List<MessagePackValue> elements, int boundary, [String? typeName]) {
+  void _checkElementLength(
+    List<MessagePackValue> elements,
+    int boundary, [
+    String? typeName,
+  ]) {
     if (elements.length < boundary) {
       throw FormatException(
         '${typeName != null ? 'Invalid structure for $typeName. ' : ''}Expected at least $boundary elements, but got ${elements.length} elements.',

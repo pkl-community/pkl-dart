@@ -5,10 +5,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:pkl_dart/src/message_pack/message_pack.dart';
-import 'package:pkl_dart/src/serializer/message_serializer.dart';
-
 import '../message.dart';
+import '../message_pack/message_pack.dart';
+import '../serializer/message_serializer.dart';
 import 'manager_utils.dart';
 import 'pkl_error.dart';
 
@@ -40,7 +39,10 @@ abstract class BaseMessageTransport implements MessageTransport {
   BaseMessageTransport(Stream<List<int>> reader, IOSink writer) {
     _encoder = MessagePackEncoder.fromSink(writer);
     _decoder = MessagePackDecoder();
-    _messageSerializer = MessageSerializer(encoder: _encoder, decoder: _decoder);
+    _messageSerializer = MessageSerializer(
+      encoder: _encoder,
+      decoder: _decoder,
+    );
     _messageController = StreamController<ServerMessage>.broadcast();
     _messageStream = _messageController.stream;
 
@@ -129,13 +131,18 @@ class ServerMessageTransport extends BaseMessageTransport {
   Process? _process;
 
   // Private constructor used by the factory.
-  ServerMessageTransport._(this._process, Stream<List<int>> reader, IOSink writer)
-    : super(reader, writer);
+  ServerMessageTransport._(
+    this._process,
+    Stream<List<int>> reader,
+    IOSink writer,
+  ) : super(reader, writer);
 
   /// Creates and starts a new [ServerMessageTransport].
   ///
   /// This is an async factory because it needs to start the Pkl child process.
-  static Future<ServerMessageTransport> create({List<String>? pklCommand}) async {
+  static Future<ServerMessageTransport> create({
+    List<String>? pklCommand,
+  }) async {
     final command = pklCommand ?? await getPklCommand();
     final process = await Process.start(
       command[0],

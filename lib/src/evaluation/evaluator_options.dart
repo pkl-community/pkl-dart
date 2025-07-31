@@ -3,15 +3,17 @@
 // LICENSE file in the root directory of this source tree.
 
 import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
-import 'manager_utils.dart';
+import '../message.dart';
+
 import '../project.dart';
 import '../reader.dart';
 import 'logger.dart';
+import 'manager_utils.dart';
 import 'pkl_error.dart';
 import 'pkl_evaluator_settings.dart';
-import 'package:pkl_dart/src/message.dart';
 
 /// Options for configuring a Pkl evaluator.
 class EvaluatorOptions extends Equatable {
@@ -238,7 +240,9 @@ class EvaluatorOptions extends Equatable {
 
   /// Builds options that configures the evaluator with settings set on the project.
   /// Skips any settings that are nil.
-  EvaluatorOptions withProjectEvaluatorSettings(PklEvaluatorSettings evaluatorSettings) {
+  EvaluatorOptions withProjectEvaluatorSettings(
+    PklEvaluatorSettings evaluatorSettings,
+  ) {
     return copyWith(
       properties: evaluatorSettings.externalProperties ?? properties,
       env: evaluatorSettings.env ?? env,
@@ -249,8 +253,10 @@ class EvaluatorOptions extends Equatable {
           : null,
       rootDir: evaluatorSettings.rootDir ?? rootDir,
       http: evaluatorSettings.http ?? http,
-      externalModuleReaders: evaluatorSettings.externalModuleReaders ?? externalModuleReaders,
-      externalResourceReaders: evaluatorSettings.externalResourceReaders ?? externalResourceReaders,
+      externalModuleReaders:
+          evaluatorSettings.externalModuleReaders ?? externalModuleReaders,
+      externalResourceReaders:
+          evaluatorSettings.externalResourceReaders ?? externalResourceReaders,
     );
   }
 
@@ -268,9 +274,15 @@ class EvaluatorOptions extends Equatable {
           dependencies: _projectDependencies(v),
         );
       } else if (v is RemoteDependency) {
-        result[k] = ProjectOrDependency(type: "remote", packageUri: v.uri, checksums: v.checksums);
+        result[k] = ProjectOrDependency(
+          type: "remote",
+          packageUri: v.uri,
+          checksums: v.checksums,
+        );
       } else {
-        throw PklBugError.invalidMessageCode("Unknown project dependency type: ${v.runtimeType}");
+        throw PklBugError.invalidMessageCode(
+          "Unknown project dependency type: ${v.runtimeType}",
+        );
       }
     }
     return result;
@@ -280,7 +292,9 @@ class EvaluatorOptions extends Equatable {
   EvaluatorOptions withProjectDependencies(Project project) {
     // Swift uses URL(string: project.projectFileUri)! and then deleteLastPathComponent()
     // Dart's Uri.parse handles this.
-    final projectBase = Uri.parse(project.projectFileUri).resolve('.'); // Get parent directory URI
+    final projectBase = Uri.parse(
+      project.projectFileUri,
+    ).resolve('.'); // Get parent directory URI
 
     return copyWith(
       projectBaseUri: projectBase,
@@ -290,7 +304,9 @@ class EvaluatorOptions extends Equatable {
 
   /// Builds options with evaluator settings as well as dependencies from the input project.
   EvaluatorOptions withProject(Project project) {
-    return withProjectEvaluatorSettings(project.evaluatorSettings).withProjectDependencies(project);
+    return withProjectEvaluatorSettings(
+      project.evaluatorSettings,
+    ).withProjectDependencies(project);
   }
 
   /// Creates a new `EvaluatorOptions` instance with specified properties replaced.
@@ -328,9 +344,12 @@ class EvaluatorOptions extends Equatable {
       logger: logger ?? this.logger,
       projectBaseUri: projectBaseUri ?? this.projectBaseUri,
       http: http ?? this.http,
-      declaredProjectDependencies: declaredProjectDependencies ?? this.declaredProjectDependencies,
-      externalModuleReaders: externalModuleReaders ?? this.externalModuleReaders,
-      externalResourceReaders: externalResourceReaders ?? this.externalResourceReaders,
+      declaredProjectDependencies:
+          declaredProjectDependencies ?? this.declaredProjectDependencies,
+      externalModuleReaders:
+          externalModuleReaders ?? this.externalModuleReaders,
+      externalResourceReaders:
+          externalResourceReaders ?? this.externalResourceReaders,
     );
   }
 }

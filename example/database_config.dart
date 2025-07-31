@@ -8,7 +8,10 @@ class DatabaseConfig implements PklDecodable {
 
   factory DatabaseConfig.fromPkl(Map<String, dynamic> map) {
     final decoder = PklObjectDecoder(map);
-    return DatabaseConfig(user: decoder.decode('user'), poolSize: decoder.decode('poolSize'));
+    return DatabaseConfig(
+      user: decoder.decode('user'),
+      poolSize: decoder.decode('poolSize'),
+    );
   }
 }
 
@@ -17,7 +20,11 @@ class ServerConfig implements PklDecodable {
   final int port;
   final DatabaseConfig database;
 
-  ServerConfig({required this.host, required this.port, required this.database});
+  ServerConfig({
+    required this.host,
+    required this.port,
+    required this.database,
+  });
 
   factory ServerConfig.fromPkl(Map<String, dynamic> map) {
     final decoder = PklObjectDecoder(map);

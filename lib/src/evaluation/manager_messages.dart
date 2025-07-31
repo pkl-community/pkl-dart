@@ -123,7 +123,13 @@ class LogCallback extends IsolateCallback {
   final String message;
   final String? frameUri;
 
-  LogCallback(super.callbackId, this.loggerId, this.level, this.message, this.frameUri);
+  LogCallback(
+    super.callbackId,
+    this.loggerId,
+    this.level,
+    this.message,
+    this.frameUri,
+  );
 }
 
 // --- Responses from Background Isolate to Main Isolate (for commands) ---

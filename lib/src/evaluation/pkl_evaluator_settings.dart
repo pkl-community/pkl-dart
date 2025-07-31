@@ -57,8 +57,12 @@ class PklEvaluatorSettings extends Equatable {
           ? List<String>.from(json['allowedResources'])
           : null,
       noCache: json['noCache'] as bool?,
-      modulePath: json['modulePath'] != null ? List<String>.from(json['modulePath']) : null,
-      timeout: json['timeout'] != null ? PklDuration.fromPkl(json['timeout']) : null,
+      modulePath: json['modulePath'] != null
+          ? List<String>.from(json['modulePath'])
+          : null,
+      timeout: json['timeout'] != null
+          ? PklDuration.fromPkl(json['timeout'])
+          : null,
       moduleCacheDir: json['moduleCacheDir'] as String?,
       rootDir: json['rootDir'] as String?,
       http: json['http'] != null ? Http.fromJson(json['http']) : null,
@@ -72,7 +76,9 @@ class PklEvaluatorSettings extends Equatable {
               (k, v) => MapEntry(k, ExternalReader.fromJson(v)),
             )
           : null,
-      color: json['color'] != null ? PklEvaluatorSettingsColor.fromString(json['color']) : null,
+      color: json['color'] != null
+          ? PklEvaluatorSettingsColor.fromString(json['color'])
+          : null,
     );
   }
 
@@ -105,8 +111,12 @@ class PklEvaluatorSettings extends Equatable {
       'moduleCacheDir': moduleCacheDir,
       'rootDir': rootDir,
       'http': http?.toJson(),
-      'externalModuleReaders': externalModuleReaders?.map((k, v) => MapEntry(k, v.toJson())),
-      'externalResourceReaders': externalResourceReaders?.map((k, v) => MapEntry(k, v.toJson())),
+      'externalModuleReaders': externalModuleReaders?.map(
+        (k, v) => MapEntry(k, v.toJson()),
+      ),
+      'externalResourceReaders': externalResourceReaders?.map(
+        (k, v) => MapEntry(k, v.toJson()),
+      ),
       'color': color?.value,
     };
   }
@@ -161,7 +171,10 @@ class Http extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {'caCertificates': caCertificates?.toList(), 'proxy': proxy?.toJson()};
+    return {
+      'caCertificates': caCertificates?.toList(),
+      'proxy': proxy?.toJson(),
+    };
   }
 
   @override
@@ -222,7 +235,9 @@ class Proxy extends Equatable {
   factory Proxy.fromJson(Map<String, dynamic> json) {
     return Proxy(
       address: json['address'] as String?,
-      noProxy: json['noProxy'] != null ? List<String>.from(json['noProxy']) : null,
+      noProxy: json['noProxy'] != null
+          ? List<String>.from(json['noProxy'])
+          : null,
     );
   }
 

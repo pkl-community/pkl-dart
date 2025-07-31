@@ -6,25 +6,28 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 
-import 'package:pkl_dart/src/message_pack/message_pack.dart';
 import 'package:pkl_dart/src/message_pack/message_pack_value.dart';
+import 'package:pkl_dart/src/message_pack/msgpack.dart';
 import 'package:test/test.dart';
 
 import 'fixtures/msgpack_test_data.dart';
 
 void main() {
   group('MessagePackCodec', () {
-    final codec = MessagePackCodec();
     group('MessagePack Test Suite from JSON', () {
       mspTestData.forEach((fileName, tests) {
         group(fileName, () {
           for (final testCase in tests) {
             dynamic value = _getValueFromTestCase(testCase);
-            final List<String> msgpackHexes = (testCase['msgpack'] as List).cast<String>();
+            final List<String> msgpackHexes = (testCase['msgpack'] as List)
+                .cast<String>();
 
             // Skip tests for bignums that exceed Dart's int range (64-bit signed)
             if (value == null && testCase.containsKey('bignum')) {
-              test('Skipping bignum ${testCase['bignum']} (out of Dart int range)', () {});
+              test(
+                'Skipping bignum ${testCase['bignum']} (out of Dart int range)',
+                () {},
+              );
               continue; // Skip this test case
             }
 
@@ -33,39 +36,49 @@ void main() {
               final String msgpackHex = msgpackHexes[i];
               final Uint8List expectedBytes = hexToBytes(msgpackHex);
 
-              test('should decode ${value.runtimeType} $value from variant ${i + 1}', () {
-                final decoded = codec.decode(expectedBytes);
-                _assertDecodedValue(decoded, value);
-              });
+              test(
+                'should decode ${value.runtimeType} $value from variant ${i + 1}',
+                () {
+                  final decoded = msgPack.decode(expectedBytes);
+                  _assertDecodedValue(decoded, value);
+                },
+              );
             }
 
             // Generate encoding test (only once per value, as our encoder produces one canonical form)
             // We expect our encoder to produce one of the provided msgpack variants.
-            test('should encode ${value.runtimeType} $value to a valid variant', () {
-              if (value is MessagePackBinary) {
-                value = (value as MessagePackBinary).value;
-              }
-              if (value is MessagePackExt) {
-                value = (value as MessagePackExt).value;
-              }
-              if (value is MessagePackInt) {
-                value = (value as MessagePackInt).value;
-              }
-              final encoded = codec.encode(value);
-              bool encodedMatchesAnyVariant = false;
-              for (final variantHex in msgpackHexes) {
-                if (const ListEquality().equals(encoded, hexToBytes(variantHex))) {
-                  encodedMatchesAnyVariant = true;
-                  break;
+            test(
+              'should encode ${value.runtimeType} $value to a valid variant',
+              () {
+                if (value is MessagePackBinary) {
+                  value = (value as MessagePackBinary).value;
                 }
-              }
+                if (value is MessagePackExt) {
+                  value = (value as MessagePackExt).value;
+                }
+                if (value is MessagePackInt) {
+                  value = (value as MessagePackInt).value;
+                }
+                final encoded = msgPack.encode(value);
+                bool encodedMatchesAnyVariant = false;
+                for (final variantHex in msgpackHexes) {
+                  if (const ListEquality().equals(
+                    encoded,
+                    hexToBytes(variantHex),
+                  )) {
+                    encodedMatchesAnyVariant = true;
+                    break;
+                  }
+                }
 
-              expect(
-                encodedMatchesAnyVariant,
-                isTrue,
-                reason: 'Encoder output must be one of the valid MessagePack variants',
-              );
-            });
+                expect(
+                  encodedMatchesAnyVariant,
+                  isTrue,
+                  reason:
+                      'Encoder output must be one of the valid MessagePack variants',
+                );
+              },
+            );
           }
         });
       });
@@ -137,7 +150,9 @@ dynamic _convertJsonValue(dynamic jsonValue, [String? key]) {
       // Use MessagePackBinary directly as the expected value
       return MessagePackBinary(hexToBytes(jsonValue['binary'] as String));
     } else if (jsonValue.containsKey('array')) {
-      return (jsonValue['array'] as List).map((e) => _convertJsonValue(e)).toList();
+      return (jsonValue['array'] as List)
+          .map((e) => _convertJsonValue(e))
+          .toList();
     } else if (jsonValue.containsKey('map')) {
       return (jsonValue['map'] as Map).map(
         (k, v) => MapEntry(_convertJsonValue(k), _convertJsonValue(v)),
@@ -156,12 +171,16 @@ dynamic _convertJsonValue(dynamic jsonValue, [String? key]) {
       } catch (e) {
         // If parsing fails (e.g., too large for 64-bit signed int),
         // return null to indicate this test case should be skipped.
-        print('Warning: Bignum $bignumStr is out of Dart\'s 64-bit int range. Skipping test.');
+        print(
+          'Warning: Bignum $bignumStr is out of Dart\'s 64-bit int range. Skipping test.',
+        );
         return null;
       }
     }
     // If it's a generic map, recurse on its contents
-    return jsonValue.map((k, v) => MapEntry(_convertJsonValue(k), _convertJsonValue(v)));
+    return jsonValue.map(
+      (k, v) => MapEntry(_convertJsonValue(k), _convertJsonValue(v)),
+    );
   } else if (jsonValue is List) {
     return jsonValue.map((e) => _convertJsonValue(e)).toList();
   }
@@ -169,7 +188,10 @@ dynamic _convertJsonValue(dynamic jsonValue, [String? key]) {
 }
 
 // Helper to extract the actual Dart value from a test case map
-dynamic _getValueFromTestCase(Map<String, dynamic> testCase, [bool toEncode = false]) {
+dynamic _getValueFromTestCase(
+  Map<String, dynamic> testCase, [
+  bool toEncode = false,
+]) {
   // Find the single key that represents the value (excluding 'msgpack')
   final valueKey = testCase.keys.firstWhere((key) => key != 'msgpack');
   return _convertJsonValue(testCase[valueKey], toEncode ? null : valueKey);
@@ -178,9 +200,17 @@ dynamic _getValueFromTestCase(Map<String, dynamic> testCase, [bool toEncode = fa
 // Helper for deep comparison of decoded MessagePackValue against expected raw Dart value
 void _assertDecodedValue(MessagePackValue decoded, dynamic expectedValue) {
   if (expectedValue == null) {
-    expect(decoded, isA<MessagePackNil>(), reason: 'Decoded value should be MessagePackNil');
+    expect(
+      decoded,
+      isA<MessagePackNil>(),
+      reason: 'Decoded value should be MessagePackNil',
+    );
   } else if (expectedValue is bool) {
-    expect(decoded, isA<MessagePackBool>(), reason: 'Decoded value should be MessagePackBool');
+    expect(
+      decoded,
+      isA<MessagePackBool>(),
+      reason: 'Decoded value should be MessagePackBool',
+    );
     expect(
       (decoded as MessagePackBool).value,
       equals(expectedValue),
@@ -188,7 +218,11 @@ void _assertDecodedValue(MessagePackValue decoded, dynamic expectedValue) {
     );
   } else if (expectedValue is num) {
     if (decoded is MessagePackInt) {
-      expect(decoded.value, equals(expectedValue), reason: 'Decoded int value should match');
+      expect(
+        decoded.value,
+        equals(expectedValue),
+        reason: 'Decoded int value should match',
+      );
     } else if (decoded is MessagePackFloat) {
       // Use closeTo for float comparison due to precision
       expect(
@@ -200,7 +234,11 @@ void _assertDecodedValue(MessagePackValue decoded, dynamic expectedValue) {
       fail('Decoded number is not MessagePackInt or MessagePackFloat');
     }
   } else if (expectedValue is String) {
-    expect(decoded, isA<MessagePackString>(), reason: 'Decoded value should be MessagePackString');
+    expect(
+      decoded,
+      isA<MessagePackString>(),
+      reason: 'Decoded value should be MessagePackString',
+    );
     expect(
       (decoded as MessagePackString).value,
       equals(expectedValue),
@@ -208,7 +246,11 @@ void _assertDecodedValue(MessagePackValue decoded, dynamic expectedValue) {
     );
   } else if (expectedValue is List) {
     // This is for raw Dart Lists, not MessagePackArray
-    expect(decoded, isA<MessagePackArray>(), reason: 'Decoded value should be MessagePackArray');
+    expect(
+      decoded,
+      isA<MessagePackArray>(),
+      reason: 'Decoded value should be MessagePackArray',
+    );
     final decodedArray = (decoded as MessagePackArray).elements;
     expect(
       decodedArray.length,
@@ -221,23 +263,40 @@ void _assertDecodedValue(MessagePackValue decoded, dynamic expectedValue) {
     }
   } else if (expectedValue is Map) {
     // This is for raw Dart Maps, not MessagePackMap
-    expect(decoded, isA<MessagePackMap>(), reason: 'Decoded value should be MessagePackMap');
+    expect(
+      decoded,
+      isA<MessagePackMap>(),
+      reason: 'Decoded value should be MessagePackMap',
+    );
     final decodedMap = (decoded as MessagePackMap).map;
-    expect(decodedMap.length, equals(expectedValue.length), reason: 'Decoded map length mismatch');
+    expect(
+      decodedMap.length,
+      equals(expectedValue.length),
+      reason: 'Decoded map length mismatch',
+    );
     expectedValue.forEach((k, v) {
       // Find the corresponding key in the decoded map using _compareMessagePackValues
       final decodedKey = decodedMap.keys.firstWhere(
         (dk) => _compareMessagePackValues(dk, k),
         orElse: () => throw 'Key $k not found in decoded map',
       );
-      _assertDecodedValue(decodedMap[decodedKey]!, v); // Recursive call for value
+      _assertDecodedValue(
+        decodedMap[decodedKey]!,
+        v,
+      ); // Recursive call for value
     });
   }
   // If expectedValue is already a MessagePackValue subclass (like MessagePackBinary, MessagePackTimestamp, MessagePackExt)
   else if (expectedValue is MessagePackValue) {
-    expect(decoded, equals(expectedValue), reason: 'Decoded MessagePackValue subclass mismatch');
+    expect(
+      decoded,
+      equals(expectedValue),
+      reason: 'Decoded MessagePackValue subclass mismatch',
+    );
   } else {
-    fail('Unhandled expected value type in _assertDecodedValue: ${expectedValue.runtimeType}');
+    fail(
+      'Unhandled expected value type in _assertDecodedValue: ${expectedValue.runtimeType}',
+    );
   }
 }
 
@@ -250,7 +309,8 @@ bool _compareMessagePackValues(MessagePackValue mpValue, dynamic rawValue) {
   } else if (rawValue is int) {
     return mpValue is MessagePackInt && mpValue.value == rawValue;
   } else if (rawValue is double) {
-    return mpValue is MessagePackFloat && (mpValue.value - rawValue).abs() < 1e-9;
+    return mpValue is MessagePackFloat &&
+        (mpValue.value - rawValue).abs() < 1e-9;
   } else if (rawValue is String) {
     return mpValue is MessagePackString && mpValue.value == rawValue;
   } else if (rawValue is List) {

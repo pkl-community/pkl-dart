@@ -50,17 +50,21 @@ class EvaluatorManager {
     final connection = Completer<(ReceivePort, SendPort)>.sync();
     initPort.handler = (initialMessage) {
       final commandPort = initialMessage as SendPort;
-      connection.complete((ReceivePort.fromRawReceivePort(initPort), commandPort));
+      connection.complete((
+        ReceivePort.fromRawReceivePort(initPort),
+        commandPort,
+      ));
     };
 
     try {
-      await Isolate.spawn(evaluatorManagerIsolateEntrypoint, (initPort.sendPort));
+      await Isolate.spawn(evaluatorManagerIsolateEntrypoint, initPort.sendPort);
     } on Object {
       initPort.close();
       rethrow;
     }
 
-    final (ReceivePort receivePort, SendPort sendPort) = await connection.future;
+    final (ReceivePort receivePort, SendPort sendPort) =
+        await connection.future;
     return EvaluatorManager._(receivePort, sendPort);
   }
 
@@ -135,11 +139,16 @@ class EvaluatorManager {
   /// Creates a new evaluator that is configured from the provided project.
   ///
   /// The provided [uri] should be the base uri of the project.
-  Future<Evaluator> newProjectEvaluator({required Uri uri, EvaluatorOptions? options}) async {
+  Future<Evaluator> newProjectEvaluator({
+    required Uri uri,
+    EvaluatorOptions? options,
+  }) async {
     // This helper creates a temporary evaluator on the current manager,
     // runs an action, and guarantees its cleanup without spawning a new isolate.
     Future<T> withTempEvaluator<T>(Future<T> Function(Evaluator) action) async {
-      final tempEvaluator = await newEvaluator(options: await EvaluatorOptions.preconfigured);
+      final tempEvaluator = await newEvaluator(
+        options: await EvaluatorOptions.preconfigured,
+      );
       try {
         return await action(tempEvaluator);
       } finally {
@@ -149,11 +158,14 @@ class EvaluatorManager {
 
     // Use the temporary evaluator to read the project file.
     final project = await withTempEvaluator((tempEv) async {
-      final result = await tempEv.evaluateModule(ModuleSource.uri(uri)) as Map<String, dynamic>;
+      final result =
+          await tempEv.evaluateModule(ModuleSource.uri(uri))
+              as Map<String, dynamic>;
       return Project.fromJson(result);
     });
 
-    final finalOptions = (options ?? await EvaluatorOptions.preconfigured).withProject(project);
+    final finalOptions = (options ?? await EvaluatorOptions.preconfigured)
+        .withProject(project);
     return await newEvaluator(options: finalOptions);
   }
 
@@ -224,7 +236,9 @@ class EvaluatorManager {
             throw PklError('ModuleReader with ID ${cb.readerId} not found.');
           }
           result = await reader.listElements(uri: cb.uri);
-          result = (result as List<PathElement>).map((e) => e.toMessage()).toList();
+          result = (result as List<PathElement>)
+              .map((e) => e.toMessage())
+              .toList();
           break;
         case ListResourcesCallback cb:
           final reader = _resourceReaders[cb.readerId];
@@ -232,7 +246,9 @@ class EvaluatorManager {
             throw PklError('ResourceReader with ID ${cb.readerId} not found.');
           }
           result = await reader.listElements(uri: cb.uri);
-          result = (result as List<PathElement>).map((e) => e.toMessage()).toList();
+          result = (result as List<PathElement>)
+              .map((e) => e.toMessage())
+              .toList();
           break;
         case LogCallback cb:
           final logger = _loggers[cb.loggerId];
@@ -250,10 +266,14 @@ class EvaluatorManager {
           }
           return; // No response needed for log
       }
-      _sendPortToIsolate.send(CallbackSuccessResponse(callback.callbackId, result));
+      _sendPortToIsolate.send(
+        CallbackSuccessResponse(callback.callbackId, result),
+      );
     } catch (e) {
       log('Error handling callback ${callback.runtimeType}: $e');
-      _sendPortToIsolate.send(CallbackErrorResponse(callback.callbackId, e.toString()));
+      _sendPortToIsolate.send(
+        CallbackErrorResponse(callback.callbackId, e.toString()),
+      );
     }
   }
 }

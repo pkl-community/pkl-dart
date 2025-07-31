@@ -10,7 +10,7 @@ import 'pkl_data_model.dart';
 
 /// Encodes Dart objects into Pkl binary format (MessagePack).
 class PklEncoder {
-  final MessagePackCodec _messagePackCodec = MessagePackCodec();
+  final MessagePackCodec _messagePackCodec = const MessagePackCodec();
 
   /// Encodes a Dart object into Pkl binary format.
   ///
@@ -50,7 +50,9 @@ class PklEncoder {
             PklTypeCodes.object,
             value.fqcn,
             value.moduleUri,
-            value.members.map((m) => _convertPklToMessagePackEncodable(m)).toList(),
+            value.members
+                .map((m) => _convertPklToMessagePackEncodable(m))
+                .toList(),
           ];
         case PklMap():
           final normalizedMap = value.data.entries.fold({}, (pm, e) {
@@ -108,15 +110,15 @@ class PklEncoder {
     } else if (value is PklMember) {
       switch (value) {
         case PklProperty():
-          final key = (value).key;
+          final key = value.key;
           final pValue = _convertPklToMessagePackEncodable(value.value);
           return [PklTypeCodes.property, key, pValue];
         case PklEntry():
-          final key = (value).key;
+          final key = value.key;
           final eValue = _convertPklToMessagePackEncodable(value.value);
           return [PklTypeCodes.entry, key, eValue];
         case PklElement():
-          final index = (value).index;
+          final index = value.index;
           final eValue = _convertPklToMessagePackEncodable(value.value);
           return [PklTypeCodes.element, index, eValue];
       }

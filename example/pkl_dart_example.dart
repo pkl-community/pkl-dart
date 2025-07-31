@@ -33,7 +33,10 @@ Future<void> main() async {
          name: String
          }""");
 
-    return e.evaluateModuleAs<Classes>(source: module, fromPkl: Classes.fromPkl);
+    return e.evaluateModuleAs<Classes>(
+      source: module,
+      fromPkl: Classes.fromPkl,
+    );
   });
 
   print(classes);
@@ -47,18 +50,25 @@ Future<void> main() async {
     ''');
 
     // Evaluate the entire module into a Map
-    final config = await evaluator.evaluateModule(module) as Map<String, dynamic>;
+    final config =
+        await evaluator.evaluateModule(module) as Map<String, dynamic>;
     print(config['name']); // Pkl-Dart
 
     // Evaluate a single expression
     final features =
-        await evaluator.evaluateExpression(source: module, expression: 'features') as List;
+        await evaluator.evaluateExpression(
+              source: module,
+              expression: 'features',
+            )
+            as List;
     print(features.first); // Evaluation
   });
 
   final manager = await EvaluatorManager.spawn();
   final evaluator = await manager.newEvaluator();
-  final module = ModuleSource.text("age = 30; hobbies = List(\"swimming\", \"surfing\")");
+  final module = ModuleSource.text(
+    "age = 30; hobbies = List(\"swimming\", \"surfing\")",
+  );
   final result = await evaluator.evaluateModule(module);
   print(result);
   manager.close();
@@ -124,7 +134,9 @@ class Classes extends PklDecodable {
   factory Classes.fromPkl(Map<String, dynamic> map) {
     final decoder = PklObjectDecoder(map);
     final decodedAnimals = decoder.decodeList<Map<dynamic, dynamic>>('animals');
-    final animals = decodedAnimals.map((e) => Animal.fromPkl(e.cast())).toList();
+    final animals = decodedAnimals
+        .map((e) => Animal.fromPkl(e.cast()))
+        .toList();
 
     return Classes(animals: animals);
   }

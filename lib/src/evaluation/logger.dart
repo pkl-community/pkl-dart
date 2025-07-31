@@ -3,8 +3,9 @@
 // LICENSE file in the root directory of this source tree.
 
 import 'dart:io';
-import 'package:logging/logging.dart' as dl;
+
 import 'package:equatable/equatable.dart';
+import 'package:logging/logging.dart' as dl;
 
 /// Handler to control logging messages emitted by the Pkl evaluator.
 ///
@@ -67,13 +68,21 @@ class DartLogger extends Logger with EquatableMixin {
 
   @override
   void trace({required String message, required String frameUri}) {
-    final formattedMessage = formatLogMessage(level: 'TRACE', message: message, frameUri: frameUri);
+    final formattedMessage = formatLogMessage(
+      level: 'TRACE',
+      message: message,
+      frameUri: frameUri,
+    );
     _logger.finest(formattedMessage);
   }
 
   @override
   void warn({required String message, required String frameUri}) {
-    final formattedMessage = formatLogMessage(level: 'WARN', message: message, frameUri: frameUri);
+    final formattedMessage = formatLogMessage(
+      level: 'WARN',
+      message: message,
+      frameUri: frameUri,
+    );
     _logger.warning(formattedMessage);
   }
 
@@ -89,13 +98,21 @@ class IOSinkLogger extends Logger with EquatableMixin {
 
   @override
   void trace({required String message, required String frameUri}) {
-    final formattedMessage = formatLogMessage(level: 'TRACE', message: message, frameUri: frameUri);
+    final formattedMessage = formatLogMessage(
+      level: 'TRACE',
+      message: message,
+      frameUri: frameUri,
+    );
     ioSink.writeln(formattedMessage);
   }
 
   @override
   void warn({required String message, required String frameUri}) {
-    final formattedMessage = formatLogMessage(level: 'WARN', message: message, frameUri: frameUri);
+    final formattedMessage = formatLogMessage(
+      level: 'WARN',
+      message: message,
+      frameUri: frameUri,
+    );
     ioSink.writeln(formattedMessage);
   }
 

@@ -3,7 +3,7 @@
 // LICENSE file in the root directory of this source tree.
 
 import 'package:equatable/equatable.dart';
-import 'package:pkl_dart/src/evaluation/pkl_evaluator_settings.dart';
+import 'evaluation/pkl_evaluator_settings.dart';
 import 'message.dart';
 
 /// The Dart representation of `pkl.Project`
@@ -25,7 +25,13 @@ class Project extends Equatable implements DependencyDeclaredInProjectFile {
   });
 
   @override
-  List<Object?> get props => [package, evaluatorSettings, projectFileUri, tests, dependencies];
+  List<Object?> get props => [
+    package,
+    evaluatorSettings,
+    projectFileUri,
+    tests,
+    dependencies,
+  ];
 
   @override
   bool? get stringify => true;
@@ -63,10 +69,14 @@ class Project extends Equatable implements DependencyDeclaredInProjectFile {
     final hasTests = map.containsKey('tests');
 
     return Project(
-      package: hasPackage ? Package.fromJson(map['package'] as Map<String, dynamic>) : null,
+      package: hasPackage
+          ? Package.fromJson(map['package'] as Map<String, dynamic>)
+          : null,
       evaluatorSettings: hasSettings
-          ? PklEvaluatorSettings.fromJson(map['evaluatorSettings'] as Map<String, dynamic>)
-          : PklEvaluatorSettings(),
+          ? PklEvaluatorSettings.fromJson(
+              map['evaluatorSettings'] as Map<String, dynamic>,
+            )
+          : const PklEvaluatorSettings(),
       projectFileUri: hasProjectUri ? map['projectFileUri'] as String : '',
       tests: hasTests ? List<String>.from(map['tests']) : [],
       dependencies: dependencies,
@@ -81,7 +91,9 @@ class Project extends Equatable implements DependencyDeclaredInProjectFile {
       type: 'local',
       projectFileUri: projectFileUri,
       checksums: checksums,
-      dependencies: dependencies.map((k, v) => MapEntry(k, v.toProjectOrDependency())),
+      dependencies: dependencies.map(
+        (k, v) => MapEntry(k, v.toProjectOrDependency()),
+      ),
     );
   }
 }
@@ -100,7 +112,8 @@ abstract class DependencyDeclaredInProjectFile extends Equatable {
 }
 
 /// The Dart representation of `pkl.Project#RemoteDependency`
-class RemoteDependency extends Equatable implements DependencyDeclaredInProjectFile {
+class RemoteDependency extends Equatable
+    implements DependencyDeclaredInProjectFile {
   final String uri;
   final Checksums? checksums;
 

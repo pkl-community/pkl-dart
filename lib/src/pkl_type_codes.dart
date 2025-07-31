@@ -14,7 +14,8 @@ abstract class PklTypeCodes {
   static const int pair = 0x9;
   static const int intSeq = 0xA;
   static const int regex = 0xB;
-  static const int classType = 0xC; // Renamed from 'class' to avoid keyword conflict
+  static const int classType =
+      0xC; // Renamed from 'class' to avoid keyword conflict
   static const int typeAlias = 0xD;
 
   // Object Member Codes

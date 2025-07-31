@@ -35,7 +35,7 @@ class MessageSerializer {
         'Expected MessagePack array of length 2, but got ${message.elements.length}',
       );
     }
-    final code = (message.elements[0] as MessagePackInt);
+    final code = message.elements[0] as MessagePackInt;
     final type = MessageType.fromValue(code.value);
     if (type == null) {
       throw ArgumentError('Unknown server message code: $code');

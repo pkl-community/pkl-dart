@@ -2,16 +2,16 @@
 // for details. This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import 'package:equatable/equatable.dart';
 import 'dart:core';
+
+import 'package:equatable/equatable.dart';
 
 import '../message_pack/message_pack_value.dart';
 import '../serializer/pkl_decodable.dart';
 import '../serializer/pkl_value/pkl_object_decoder.dart';
 
-part 'pkl_value/duration.dart';
-
 part 'pkl_value/data_size.dart';
+part 'pkl_value/duration.dart';
 
 /// Base sealed class for all Pkl non-primitive values.
 sealed class PklValue extends Equatable {
@@ -31,7 +31,11 @@ class PklObject extends PklValue {
 
   final List<PklMember> members;
 
-  const PklObject({required this.fqcn, required this.moduleUri, this.members = const []});
+  const PklObject({
+    required this.fqcn,
+    required this.moduleUri,
+    this.members = const [],
+  });
 
   @override
   List<Object?> get props => [fqcn, moduleUri, members];

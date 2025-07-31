@@ -4,5 +4,5 @@
 
 library;
 
-export 'pkl_value/pkl_object_decoder.dart';
 export 'pkl_decodable.dart';
+export 'pkl_value/pkl_object_decoder.dart';
